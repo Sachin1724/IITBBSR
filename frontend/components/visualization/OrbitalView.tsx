@@ -1,8 +1,8 @@
 'use client'
 
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Stars, Html } from '@react-three/drei'
-import { Suspense, useState } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { OrbitControls, Stars, Html, useTexture, Sphere } from '@react-three/drei'
+import { Suspense, useState, useRef } from 'react'
 import * as THREE from 'three'
 
 interface Asteroid {
@@ -24,54 +24,162 @@ interface OrbitalViewProps {
     asteroids: Asteroid[]
 }
 
-// Simple Earth component
-function Earth() {
+// Realistic Earth component with textures
+function RealisticEarth() {
+    const earthRef = useRef<THREE.Mesh>(null)
+
+    const [dayMap, normalMap, specularMap] = useTexture([
+        '/textures/8k_earth_daymap.jpg',
+        '/textures/8k_earth_normal_map_1.jpg',
+        '/textures/8k_earth_specular_map.jpg',
+    ])
+
+    useFrame((state, delta) => {
+        if (earthRef.current) {
+            earthRef.current.rotation.y += delta * 0.05
+        }
+    })
+
     return (
-        <mesh>
-            <sphereGeometry args={[1, 32, 32]} />
-            <meshStandardMaterial color="#2244aa" emissive="#001133" emissiveIntensity={0.3} />
-        </mesh>
+        <>
+            <Sphere ref={earthRef} args={[1, 128, 128]}>
+                <meshStandardMaterial
+                    map={dayMap}
+                    normalMap={normalMap}
+                    roughnessMap={specularMap}
+                    roughness={0.8}
+                    metalness={0.1}
+                />
+            </Sphere>
+
+            {/* Atmosphere */}
+            <Sphere args={[1.02, 64, 64]}>
+                <meshBasicMaterial
+                    color="#88ccff"
+                    transparent
+                    opacity={0.15}
+                    side={THREE.BackSide}
+                />
+            </Sphere>
+
+            <Sphere args={[1.05, 64, 64]}>
+                <meshBasicMaterial
+                    color="#4488ff"
+                    transparent
+                    opacity={0.08}
+                    side={THREE.BackSide}
+                />
+            </Sphere>
+        </>
     )
 }
 
-// Asteroid marker component
-function AsteroidMarker({ asteroid, onClick }: { asteroid: Asteroid; onClick: () => void }) {
-    // Calculate position based on miss distance (simplified)
-    const distance = Math.min(asteroid.missDistance / 384400, 10) + 2 // Scale to scene units
-    const angle = Math.random() * Math.PI * 2 // Random angle for demo
+// Fallback Earth
+function FallbackEarth() {
+    const earthRef = useRef<THREE.Mesh>(null)
+
+    useFrame((state, delta) => {
+        if (earthRef.current) {
+            earthRef.current.rotation.y += delta * 0.05
+        }
+    })
+
+    return (
+        <Sphere ref={earthRef} args={[1, 64, 64]}>
+            <meshStandardMaterial
+                color="#2244aa"
+                roughness={0.7}
+                metalness={0.1}
+                emissive="#001133"
+                emissiveIntensity={0.2}
+            />
+        </Sphere>
+    )
+}
+
+// Enhanced asteroid marker with responsive sizing
+function AsteroidMarker({
+    asteroid,
+    onClick,
+    isSelected
+}: {
+    asteroid: Asteroid
+    onClick: () => void
+    isSelected: boolean
+}) {
+    const meshRef = useRef<THREE.Mesh>(null)
+    const [hovered, setHovered] = useState(false)
+
+    // Calculate position based on miss distance
+    const distance = Math.min(asteroid.missDistance / 384400, 10) + 2
+    const angle = Math.random() * Math.PI * 2
     const x = Math.cos(angle) * distance
     const z = Math.sin(angle) * distance
-    const y = (Math.random() - 0.5) * 2 // Random height
+    const y = (Math.random() - 0.5) * 2
 
     const color = asteroid.isHazardous ? '#ff0000' : asteroid.missDistance < 0.05 ? '#ffaa00' : '#00ff00'
-    const size = Math.max(0.05, Math.min(asteroid.diameter / 1000, 0.3))
+
+    // Base size scales with diameter, but responsive to camera distance
+    const baseSize = Math.max(0.03, Math.min(asteroid.diameter / 1000, 0.2))
+
+    useFrame((state) => {
+        if (meshRef.current) {
+            // Calculate distance from camera to asteroid
+            const cameraDistance = state.camera.position.distanceTo(meshRef.current.position)
+
+            // Scale inversely with distance (closer = smaller, farther = larger for visibility)
+            const scale = baseSize * Math.max(0.5, Math.min(cameraDistance / 10, 2))
+            meshRef.current.scale.setScalar(scale)
+
+            // Gentle rotation
+            meshRef.current.rotation.y += 0.01
+        }
+    })
 
     return (
         <group position={[x, y, z]}>
-            <mesh onClick={onClick}>
-                <sphereGeometry args={[size, 16, 16]} />
-                <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.5} />
+            <mesh
+                ref={meshRef}
+                onClick={onClick}
+                onPointerOver={() => setHovered(true)}
+                onPointerOut={() => setHovered(false)}
+            >
+                <sphereGeometry args={[1, 16, 16]} />
+                <meshStandardMaterial
+                    color={color}
+                    emissive={color}
+                    emissiveIntensity={hovered || isSelected ? 0.8 : 0.5}
+                    roughness={0.7}
+                />
             </mesh>
-            <Html distanceFactor={10}>
-                <div className="bg-black/70 text-white text-xs px-2 py-1 rounded whitespace-nowrap pointer-events-none">
-                    {asteroid.name}
+
+            {/* Info label - always visible but scales with distance */}
+            <Html distanceFactor={15} center>
+                <div className={`bg-black/80 text-white text-xs px-2 py-1 rounded whitespace-nowrap pointer-events-none transition-all ${hovered || isSelected ? 'opacity-100 scale-110' : 'opacity-70'
+                    }`}>
+                    <div className="font-semibold">{asteroid.name}</div>
+                    <div className="text-[10px] text-gray-300">
+                        {asteroid.missDistance.toFixed(3)} LD • {asteroid.velocity.toFixed(1)} km/s
+                    </div>
+                    <div className="text-[10px] text-gray-400">
+                        Ø {asteroid.diameter.toFixed(0)}m
+                    </div>
                 </div>
             </Html>
         </group>
     )
 }
 
-// Orbital path component (simplified ellipse)
+// Orbital path component
 function OrbitalPath({ asteroid }: { asteroid: Asteroid }) {
     const distance = Math.min(asteroid.missDistance / 384400, 10) + 2
     const points: THREE.Vector3[] = []
 
-    // Create elliptical path
     for (let i = 0; i <= 64; i++) {
         const angle = (i / 64) * Math.PI * 2
         const x = Math.cos(angle) * distance
-        const z = Math.sin(angle) * distance * 0.8 // Slightly elliptical
-        const y = Math.sin(angle * 2) * 0.5 // Add some vertical variation
+        const z = Math.sin(angle) * distance * 0.8
+        const y = Math.sin(angle * 2) * 0.5
         points.push(new THREE.Vector3(x, y, z))
     }
 
@@ -92,7 +200,6 @@ export function OrbitalView({ asteroids }: OrbitalViewProps) {
     const [selectedAsteroid, setSelectedAsteroid] = useState<Asteroid | null>(null)
     const [showPaths, setShowPaths] = useState(true)
 
-    // Limit to closest 50 asteroids for performance
     const displayAsteroids = asteroids.slice(0, 50)
 
     return (
@@ -114,6 +221,9 @@ export function OrbitalView({ asteroids }: OrbitalViewProps) {
                 </div>
                 <div className="text-xs text-[#9290C3]/60">
                     Showing {displayAsteroids.length} closest asteroids
+                </div>
+                <div className="text-xs text-[#9290C3]/40 mt-2 pt-2 border-t border-[#535C91]/30">
+                    💡 Zoom in/out to see asteroids resize
                 </div>
             </div>
 
@@ -164,11 +274,12 @@ export function OrbitalView({ asteroids }: OrbitalViewProps) {
             {/* 3D Canvas */}
             <Canvas camera={{ position: [0, 5, 10], fov: 60 }}>
                 <Suspense fallback={null}>
-                    {/* Background stars */}
                     <Stars radius={100} depth={50} count={5000} factor={4} fade speed={1} />
 
-                    {/* Earth */}
-                    <Earth />
+                    {/* Realistic Earth with textures */}
+                    <Suspense fallback={<FallbackEarth />}>
+                        <RealisticEarth />
+                    </Suspense>
 
                     {/* Orbital paths */}
                     {showPaths && displayAsteroids.map((asteroid) => (
@@ -181,6 +292,7 @@ export function OrbitalView({ asteroids }: OrbitalViewProps) {
                             key={asteroid.id}
                             asteroid={asteroid}
                             onClick={() => setSelectedAsteroid(asteroid)}
+                            isSelected={selectedAsteroid?.id === asteroid.id}
                         />
                     ))}
 
@@ -194,7 +306,7 @@ export function OrbitalView({ asteroids }: OrbitalViewProps) {
                         enablePan={true}
                         enableZoom={true}
                         enableRotate={true}
-                        minDistance={3}
+                        minDistance={2}
                         maxDistance={50}
                     />
                 </Suspense>
@@ -202,7 +314,7 @@ export function OrbitalView({ asteroids }: OrbitalViewProps) {
 
             {/* Instructions */}
             <div className="absolute bottom-4 right-4 z-10 bg-[#1B1A55]/70 backdrop-blur-sm border border-[#535C91]/20 rounded-lg p-2 text-xs text-[#9290C3]/60">
-                Click and drag to rotate • Scroll to zoom • Click asteroids for details
+                Drag to rotate • Scroll to zoom • Click asteroids for details
             </div>
         </div>
     )

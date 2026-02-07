@@ -13,11 +13,11 @@ interface EarthModelProps {
 function TexturedEarth({ radius }: { radius: number }) {
     const earthRef = useRef<THREE.Mesh>(null)
 
-    // Load Earth textures (using JPG for better browser support)
+    // Load 8K Earth textures
     const [dayMap, normalMap, specularMap] = useTexture([
-        '/textures/earth_day.jpg',
-        '/textures/earth_normal.jpg',
-        '/textures/earth_specular.jpg',
+        '/textures/8k_earth_daymap.jpg',
+        '/textures/8k_earth_normal_map_1.jpg',
+        '/textures/8k_earth_specular_map.jpg',
     ])
 
     useFrame((state, delta) => {
@@ -64,7 +64,7 @@ function FallbackEarth({ radius }: { radius: number }) {
 export function EarthModel({ radius = 5, rotation = 0 }: EarthModelProps) {
     return (
         <group>
-            {/* Earth with Real Textures (fallback to blue sphere if textures fail) */}
+            {/* Earth with 8K Textures (fallback to blue sphere if textures fail) */}
             <Suspense fallback={<FallbackEarth radius={radius} />}>
                 <TexturedEarth radius={radius} />
             </Suspense>
@@ -98,6 +98,6 @@ export function EarthModel({ radius = 5, rotation = 0 }: EarthModelProps) {
 }
 
 // Preload textures for better performance
-useTexture.preload('/textures/earth_day.jpg')
-useTexture.preload('/textures/earth_normal.jpg')
-useTexture.preload('/textures/earth_specular.jpg')
+useTexture.preload('/textures/8k_earth_daymap.jpg')
+useTexture.preload('/textures/8k_earth_normal_map_1.jpg')
+useTexture.preload('/textures/8k_earth_specular_map.jpg')
