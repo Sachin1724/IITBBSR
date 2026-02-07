@@ -1,249 +1,72 @@
 # AI-LOG.md
-## Large Language Model (LLM) Usage Documentation
+## How We Used AI in Our Project
 
-**Project**: Cosmic Watch - Asteroid Tracking & Impact Simulation Platform  
-**Team Member**: Sachin  
-**Competition**: NASA Space Apps Challenge 2025  
-**Date**: February 2026
-
----
-
-## Purpose of This Document
-
-This document serves as a transparent log of how Large Language Models (LLMs) were used throughout the development of this project. As per competition guidelines, this log demonstrates that **AI was used as an assistive tool to enhance productivity and learning**, not as a replacement for original coding efforts.
+**Project**: Cosmic Watch - Asteroid Tracking & Impact Simulation  
+**Team Members**: Sachidananda Mallick, Dibyajyoti Parida, Sanedeep kumar Sahu  
+**Team Name**: HACKX-V  
+**Competition**: Web Hackathon  
+**Date**: 8 February 2026
 
 ---
 
-## Project Overview
+### Our Approach to AI
+In building **Cosmic Watch**, our team utilized Large Language Models (LLMs) primarily as a "senior developer" or "pair programmer." We didn't want the AI to write the app for us; instead, we used it to speed up our workflow, debug tricky issues, and help us learn new technologies (like Three.js and Socket.io) much faster than we could have on our own.
 
-**Cosmic Watch** is a full-stack web application for tracking near-Earth asteroids and simulating their potential Earth impacts. The project consists of:
-- **Backend**: Node.js, TypeScript, Fastify, MongoDB, Socket.IO
-- **Frontend**: Next.js 14, React, TypeScript, Three.js, Tailwind CSS
-- **Real-time Features**: WebSocket-based chat, live notifications
-- **Data Visualization**: 3D impact simulations, interactive asteroid data
+Every piece of code in this project was reviewed, understood, and often heavily modified by us to fit our specific needs.
 
 ---
 
-## How LLMs Were Used (Assistant Role)
+### Where AI Lent a Hand
 
-### 1. **Architecture Planning & Design Decisions**
-**Original Effort**: Team designed the overall system architecture, chose the tech stack, and defined feature requirements.
+#### 1. Architecting the "Cosmos"
+We started with a vision of a real-time asteroid tracker. We used AI to bounce ideas off of regarding our project structure. It suggested using the **Next.js 14 App Router** for the frontend and a **Fastify/MongoDB** stack for the backend to keep things fast. It helped us organize our folders so that our routes, models, and socket logic stayed separated and clean.
 
-**LLM Assistance**:
-- Suggested best practices for Next.js 14 App Router structure
-- Recommended Socket.IO for real-time chat implementation
-- Advised on MongoDB schema design patterns
-- Helped structure the codebase with clear separation of concerns (routes, models, services, sockets)
+#### 2. Wrangling NASA's Data
+NASA's APIs provide incredible data, but their responses are quite complex. AI was a huge help in creating **TypeScript interfaces** that accurately mapped those responses. We also brainstormed with the AI on how to handle API failures—implementing a retry logic and a database fallback so the app wouldn't crash if NASA's servers were busy.
 
-**Outcome**: Team made final decisions on architecture; LLM provided options and trade-offs.
+#### 3. Reaching "Zero Latency" in Chat
+One of our biggest goals was making the real-time chat feel as fast as WhatsApp. 
+*   **The Idea**: We wanted the message to appear *instantly* when you hit send.
+*   **The AI Assist**: It suggested a clever trick—using `setImmediate()` in the backend to broadcast the message to everyone *first*, and then save it to the database in the background. This removed the "wait time" for the user. 
+*   **The UI**: It also helped us write the logic to group consecutive messages from the same user, so you don't see the same avatar over and over again.
 
----
+#### 4. Bringing the 3D Simulation to Life
+We used **Three.js** for the Earth model and impact simulation. We had some trouble getting the fire particle effects to look "right." The AI helped us tweak the shader math for the fire colors (shifting from intense white to smoky orange) and suggested using `react-three-fiber` to make the 3D elements work seamlessly inside our React components.
 
-### 2. **NASA API Integration**
-**Original Effort**: Team researched NASA's NeoWs API documentation, determined data requirements, and designed the caching strategy.
-
-**LLM Assistance**:
-- Helped write TypeScript interfaces for NASA API responses
-- Suggested error handling patterns for API failures
-- Recommended caching mechanisms using Redis and database fallbacks
-- Assisted with date formatting and query parameter construction
-
-**Code Example** (`backend/src/services/nasa.service.ts`):
-```typescript
-// Original design: Team decided to use try-catch with fallbacks
-// LLM assistance: Helped implement the caching logic and error messages
-```
+#### 5. Tackling Authentication
+Setting up **Google OAuth** and **JWT** can be a headache with all the redirect URIs and environment variables. AI acted as a great troubleshooting partner when we hit "missing client_id" errors, helping us double-check our `.env` configs and Google Console settings.
 
 ---
 
-### 3. **Real-Time Chat System with Zero Latency**
-**Original Effort**: Team identified the need for instant messaging, researched Socket.IO, and designed the message flow.
+### What We Did Ourselves (The Human Effort)
 
-**LLM Assistance**:
-- **Performance Optimization**: Suggested emitting messages before database writes using `setImmediate()`
-- **WebSocket Configuration**: Recommended websocket-only transport to eliminate polling overhead
-- **Message Grouping**: Helped implement WhatsApp-style consecutive message grouping logic
-- Assisted with TypeScript interfaces for chat messages and conversations
+While AI helped with the "how," the "what" and "why" came entirely from us:
 
-**Key Innovation** (`backend/src/sockets/chat.socket.ts`):
-```typescript
-// Original idea: Team wanted instant messaging
-// LLM contribution: Suggested async database writes for zero latency
-setImmediate(async () => {
-    await chatMessage.save()
-})
-```
+*   **Core Innovation**: The entire concept of an "impact simulator" linked to live NASA data was our team's creative spark.
+*   **UI Design Aesthetic**: We hand-picked the colors, designed the "glassmorphism" cards, and created the overall dark, cosmic vibe of the site.
+*   **Feature Logic**: We decided which features mattered most to users—like the watchlist and the personal inbox.
+*   **Debugging**: LLMs often guess wrong. We spent hours manually testing buttons, fixing layout issues on mobile, and ensuring the database was actually storing the right values.
+*   **Prioritization**: We managed our own time, deciding when to focus on the 3D model and when to polish the chat.
 
 ---
 
-### 4. **3D Impact Visualization with Three.js**
-**Original Effort**: Team conceptualized the 3D Earth model, impact visualization, and fire particle effects.
-
-**LLM Assistance**:
-- Helped debug Three.js shader issues
-- Suggested particle system implementation for realistic fire effects
-- Assisted with color gradients (white → orange → smoke)
-- Recommended using `react-three-fiber` for React integration
-
-**Creative Work** (`frontend/components/simulation/FireParticles.tsx`):
-- Team designed the visual aesthetic
-- LLM helped translate physics concepts into code
+### The Learning Curve
+By working alongside AI, our team didn't just "get it done"—we learned. We now have a much deeper understanding of:
+*   Real-time communication with **WebSockets**.
+*   Managing complex **3D scenes** in a web browser.
+*   Securing a modern app with **OAuth 2.0**.
+*   Optimizing **database performance** for a smoother user experience.
 
 ---
 
-### 5. **Google OAuth Integration**
-**Original Effort**: Team registered the app with Google Cloud Console, obtained credentials, and designed the authentication flow.
+### Our Promise of Originality
+We certify that this project is our original work. AI was used as a tool to enhance our productivity, much like a calculator or a library, but the human decision-making and coding execution remain our own.
 
-**LLM Assistance**:
-- Debugged "missing client_id" errors
-- Helped configure OAuth redirect URIs for local and production environments
-- Suggested proper environment variable management
-- Assisted with JWT token generation and validation
+**Signed with Pride**:
 
-**Configuration Work**:
-- Team manually configured Google Cloud Console
-- LLM helped troubleshoot configuration issues
+Sachidananda Mallick  
+Dibyajyoti Parida  
+Sanedeep kumar Sahu  
 
----
-
-### 6. **UI/UX Design**
-**Original Effort**: Team designed the cosmic/space theme, color palette, and user workflows.
-
-**LLM Assistance**:
-- Helped implement Tailwind CSS utility classes
-- Suggested animation patterns using `framer-motion`
-- Assisted with responsive design breakpoints
-- Recommended icon libraries (react-icons)
-
-**Design Decisions**: Team made all final UI/UX choices; LLM helped with implementation.
-
----
-
-### 7. **Database Schema Design**
-**Original Effort**: Team identified data entities (User, Asteroid, ChatMessage, Conversation, etc.) and relationships.
-
-**LLM Assistance**:
-- Helped write Mongoose schemas with TypeScript types
-- Suggested indexing strategies for performance
-- Recommended virtual fields and populate patterns
-- Assisted with validation rules
-
-**Example** (`backend/src/models/User.ts`):
-```typescript
-// Team designed the User model structure
-// LLM helped with Mongoose syntax and TypeScript integration
-```
-
----
-
-### 8. **Error Handling & Edge Cases**
-**Original Effort**: Team identified potential failure points through testing.
-
-**LLM Assistance**:
-- Suggested try-catch patterns
-- Helped implement fallback mechanisms (e.g., database fallback when NASA API fails)
-- Assisted with user-friendly error messages
-- Recommended validation patterns
-
----
-
-### 9. **Deployment Configuration**
-**Original Effort**: Team chose hosting platforms (Netlify for frontend, Render for backend).
-
-**LLM Assistance**:
-- Helped configure environment variables for production
-- Suggested CORS configuration for cross-origin requests
-- Assisted with deployment troubleshooting
-- Recommended caching headers and optimization strategies
-
----
-
-## What LLMs Did NOT Do
-
-To maintain academic integrity, the following remained entirely the team's original work:
-
-1. **Concept & Innovation**: All project ideas, features, and creative decisions
-2. **Problem Definition**: Identifying what features to build and why
-3. **User Research**: Understanding asteroid tracking needs and simulation requirements
-4. **Testing & Debugging**: Manual testing, finding bugs, and verifying fixes
-5. **Design Aesthetic**: Color schemes, layouts, and user experience flows
-6. **Data Analysis**: Interpreting asteroid data and impact calculations
-7. **Feature Prioritization**: Deciding what to build first and what to defer
-
----
-
-## Learning Outcomes
-
-Through this AI-assisted development process, the team learned:
-
-1. **Modern Web Development**: Next.js 14 App Router, Server Components, and API Routes
-2. **Real-Time Systems**: WebSocket implementation and performance optimization
-3. **3D Graphics**: Three.js, shader programming, and particle systems
-4. **Database Design**: MongoDB schema patterns and indexing strategies
-5. **Authentication**: OAuth 2.0 flows and JWT token management
-6. **DevOps**: Environment configuration, deployment, and production optimization
-
-**Key Insight**: Using AI as a learning accelerator helped the team understand complex concepts faster while still requiring hands-on implementation and debugging.
-
----
-
-## Code Ownership & Originality
-
-### Original Code (100% Team Effort)
-- All business logic and feature implementations
-- Database models tailored to project requirements
-- Custom impact simulation algorithms
-- UI/UX design and component structure
-- Real-time chat message grouping logic
-- NASA API integration strategy
-
-### AI-Assisted Code (Team Design + LLM Implementation Help)
-- TypeScript type definitions
-- Error handling patterns
-- Socket.IO event handlers
-- Three.js particle system physics
-- Tailwind CSS utility combinations
-
-### No Direct Code Copying
-- **Zero code was copied directly from LLM outputs without understanding**
-- All code was reviewed, tested, and modified by the team
-- Team members understand every line of code in the project
-
----
-
-## Transparency Statement
-
-This project was developed with the assistance of Large Language Models as a **productivity and learning tool**. The core ideas, architecture decisions, feature design, and final implementation are **100% the original work of the team**.
-
-We used AI to:
-- ✅ Accelerate development
-- ✅ Learn best practices
-- ✅ Debug complex issues
-- ✅ Implement industry-standard patterns
-
-We did NOT use AI to:
-- ❌ Generate entire features without understanding
-- ❌ Copy solutions blindly
-- ❌ Replace original thinking and problem-solving
-- ❌ Avoid learning the underlying technologies
-
----
-
-## Verification
-
-**Reviewers can verify our work by**:
-1. Asking questions about any part of the codebase - we can explain all design decisions
-2. Requesting live demonstrations of features and debugging sessions
-3. Reviewing our Git commit history showing iterative development
-4. Testing our knowledge of the technologies used
-
----
-
-## Conclusion
-
-This AI-LOG.md demonstrates that **Large Language Models were used responsibly as assistive tools**, not as replacements for original coding effort. The team maintains full ownership and understanding of the codebase, and all creative and technical decisions were made by human team members.
-
-**Signed**:  
-Sachin  
-Team: IITBBSR  
-Date: February 8, 2026
+**Team HACKX-V**  
+*8 February 2026*
