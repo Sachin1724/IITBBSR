@@ -3,9 +3,12 @@ import bcrypt from 'bcrypt'
 
 export interface IUser extends Document {
     email: string
-    password: string
+    password?: string  // Optional for Google OAuth users
     name: string
     role: 'user' | 'admin'
+    // OAuth fields
+    googleId?: string
+    authProvider: 'local' | 'google'
     // Profile fields
     bio?: string
     location?: string
@@ -29,8 +32,21 @@ const userSchema = new Schema<IUser>({
     },
     password: {
         type: String,
-        required: true,
+        required: function (this: IUser) {
+            return this.authProvider === 'local'
+        },
         minlength: 6,
+    },
+    googleId: {
+        type: String,
+        sparse: true,
+        unique: true,
+    },
+    authProvider: {
+        type: String,
+        enum: ['local', 'google'],
+        default: 'local',
+        required: true,
     },
     name: {
         type: String,
@@ -84,7 +100,9 @@ const userSchema = new Schema<IUser>({
 
 // Hash password before saving
 userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) return next()
+    if (!this.isModified('password') || !this.password) {
+        return next()
+    }
 
     try {
         const salt = await bcrypt.genSalt(10)
@@ -97,6 +115,9 @@ userSchema.pre('save', async function (next) {
 
 // Compare password method
 userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+    if (!this.password) {
+        return false
+    }
     return bcrypt.compare(candidatePassword, this.password)
 }
 

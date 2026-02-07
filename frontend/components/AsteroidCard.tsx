@@ -228,7 +228,15 @@ export default function AsteroidCard({ asteroid, delay = 0 }: AsteroidCardProps)
 }
 
 function ShareToChatModal({ asteroid, onClose, onSuccess }: { asteroid: Asteroid, onClose: () => void, onSuccess: () => void }) {
-    const { conversations, sendMessage, sendPrivateMessage, activeChat, setActiveChat } = useChat()
+    let chatContext
+    try {
+        chatContext = useChat()
+    } catch (e) {
+        // ChatProvider not available yet
+        chatContext = null
+    }
+
+    const { conversations = [], sendMessage = () => { }, sendPrivateMessage = () => { }, activeChat = null, setActiveChat = () => { } } = chatContext || {}
     const [selectedChat, setSelectedChat] = useState<'community' | string>('community')
     const [message, setMessage] = useState(`Check out this asteroid: ${asteroid.name} (ID: ${asteroid.id}) ☄️`)
     const [isSending, setIsSending] = useState(false)

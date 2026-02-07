@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { User, MapPin, Building, Calendar, Edit2, LogOut } from 'lucide-react'
+import { User, MapPin, Building, Calendar, Edit2, LogOut, Lock } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { ProfileEditModal } from '@/components/profile/ProfileEditModal'
+import { ChangePasswordModal } from '@/components/profile/ChangePasswordModal'
 import api from '@/lib/api'
 
 interface UserProfile {
@@ -23,6 +24,7 @@ export default function ProfilePage() {
     const [user, setUser] = useState<UserProfile | null>(null)
     const [loading, setLoading] = useState(true)
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
     const router = useRouter()
 
     useEffect(() => {
@@ -33,14 +35,16 @@ export default function ProfilePage() {
         try {
             const token = localStorage.getItem('token')
             if (!token) {
+                console.log('No token found, redirecting to login')
                 router.push('/login')
                 return
             }
 
             const response = await api.get('/api/auth/profile')
-            setUser(response.data.user)
-        } catch (error) {
-            console.error('Failed to fetch profile', error)
+            console.log('Profile response:', response.data)
+            setUser(response.data.user || response.data)
+        } catch (error: any) {
+            console.error('Failed to fetch profile:', error.response?.status, error.response?.data)
             router.push('/login')
         } finally {
             setLoading(false)
@@ -60,7 +64,8 @@ export default function ProfilePage() {
     const handleLogout = () => {
         localStorage.removeItem('token')
         localStorage.removeItem('user')
-        router.push('/login')
+        window.dispatchEvent(new Event('auth-change'))
+        router.push('/')
     }
 
     if (loading) {
@@ -112,6 +117,13 @@ export default function ProfilePage() {
                                 >
                                     <Edit2 className="w-4 h-4" />
                                     Edit Profile
+                                </button>
+                                <button
+                                    onClick={() => setIsPasswordModalOpen(true)}
+                                    className="btn-secondary flex items-center gap-2"
+                                >
+                                    <Lock className="w-4 h-4" />
+                                    Change Password
                                 </button>
                                 <button
                                     onClick={handleLogout}
@@ -185,6 +197,12 @@ export default function ProfilePage() {
                 onClose={() => setIsEditModalOpen(false)}
                 onSave={handleUpdateProfile}
                 currentUser={user}
+            />
+
+            {/* Password Modal */}
+            <ChangePasswordModal
+                isOpen={isPasswordModalOpen}
+                onClose={() => setIsPasswordModalOpen(false)}
             />
         </div>
     )

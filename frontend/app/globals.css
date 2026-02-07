@@ -14,6 +14,10 @@
     @apply border-cosmic-nebula/20;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-cosmic-deep text-cosmic-lavender antialiased;
     font-feature-settings: 'rlig' 1, 'calt' 1;
@@ -42,11 +46,11 @@
 
 @layer components {
   .glass-card {
-    @apply bg-cosmic-dark/40 backdrop-blur-md border border-cosmic-nebula/30 rounded-xl;
+    @apply bg-cosmic-dark/40 backdrop-blur-md border border-cosmic-nebula/30 rounded-xl shadow-xl shadow-black/40;
   }
 
   .glass-card-hover {
-    @apply glass-card transition-all duration-300 hover:bg-cosmic-dark/60 hover:border-cosmic-lavender/50 hover:shadow-lg hover:shadow-cosmic-nebula/20;
+    @apply glass-card transition-all duration-300 hover:bg-cosmic-dark/60 hover:border-cosmic-lavender/50 hover:shadow-2xl hover:shadow-cosmic-nebula/20;
   }
 
   .btn-primary {

@@ -95,7 +95,7 @@ export class NASAService {
         // Check database
         const dbAsteroid = await Asteroid.findOne({ asteroidId: id })
         if (dbAsteroid) {
-            return dbAsteroid
+            return this.mapDbToResponse(dbAsteroid)
         }
 
         // Fetch from NASA API
@@ -113,6 +113,57 @@ export class NASAService {
         } catch (error: any) {
             console.error('NASA API error:', error.response?.data || error.message)
             throw new Error('Asteroid not found')
+        }
+    }
+
+    private mapDbToResponse(dbAsteroid: any): any {
+        return {
+            id: dbAsteroid.asteroidId,
+            name: dbAsteroid.name,
+            nasa_jpl_url: dbAsteroid.nasaJplUrl,
+            absolute_magnitude_h: dbAsteroid.absoluteMagnitude,
+            estimated_diameter: {
+                kilometers: {
+                    estimated_diameter_min: dbAsteroid.estimatedDiameter.min,
+                    estimated_diameter_max: dbAsteroid.estimatedDiameter.max
+                }
+            },
+            is_potentially_hazardous_asteroid: dbAsteroid.isPotentiallyHazardous,
+            close_approach_data: dbAsteroid.closeApproachData.map((a: any) => ({
+                close_approach_date: a.date,
+                close_approach_date_full: a.dateFull,
+                relative_velocity: {
+                    kilometers_per_hour: a.velocity.toString()
+                },
+                miss_distance: {
+                    kilometers: a.missDistance.toString()
+                }
+            })),
+            orbital_data: dbAsteroid.orbitalData ? {
+                orbit_id: 'N/A',
+                orbit_determination_date: 'N/A',
+                first_observation_date: 'N/A',
+                last_observation_date: 'N/A',
+                data_arc_in_days: 0,
+                observations_used: 0,
+                orbit_uncertainty: 'N/A',
+                minimum_orbit_intersection: 'N/A',
+                jupiter_tisserand_invariant: 'N/A',
+                epoch_osculation: dbAsteroid.orbitalData.epoch?.toString(),
+                eccentricity: dbAsteroid.orbitalData.eccentricity?.toString(),
+                semi_major_axis: dbAsteroid.orbitalData.semiMajorAxis?.toString(),
+                inclination: dbAsteroid.orbitalData.inclination?.toString(),
+                ascending_node_longitude: dbAsteroid.orbitalData.longitudeAscendingNode?.toString(),
+                orbital_period: dbAsteroid.orbitalData.period?.toString(),
+                perihelion_distance: 'N/A',
+                perihelion_argument: dbAsteroid.orbitalData.perihelionArgument?.toString(),
+                aphelion_distance: 'N/A',
+                perihelion_time: 'N/A',
+                mean_anomaly: dbAsteroid.orbitalData.meanAnomaly?.toString(),
+                mean_motion: 'N/A',
+                equinox: 'J2000'
+            } : undefined,
+            riskScore: dbAsteroid.riskScore
         }
     }
 

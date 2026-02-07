@@ -97,6 +97,11 @@ export async function authRoutes(fastify: FastifyInstance) {
         preHandler: [fastify.authenticate],
     }, userController.updateProfile)
 
+    // Change password (protected)
+    fastify.post('/change-password', {
+        preHandler: [fastify.authenticate],
+    }, userController.changePassword)
+
     // Forgot Password
     fastify.post('/forgot-password', async (request, reply) => {
         try {

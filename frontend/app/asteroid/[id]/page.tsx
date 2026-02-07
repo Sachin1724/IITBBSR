@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ExternalLink, Bookmark, Bell, MessageCircle, Info } from 'lucide-react'
-import { asteroidAPI, type Asteroid, watchlistAPI } from '@/lib/api'
+import { ExternalLink, Bookmark, Bell, MessageCircle, Info, ArrowLeft, X } from 'lucide-react'
+import { asteroidAPI, type Asteroid, watchlistAPI, alertAPI } from '@/lib/api'
 import { formatDistance, formatVelocity, formatDiameter, getRiskLevel, calculateRiskScore } from '@/lib/utils'
 import { OrbitalView } from '@/components/visualization/OrbitalView'
 
@@ -13,12 +14,21 @@ export default function AsteroidDetailPage() {
     const [asteroid, setAsteroid] = useState<Asteroid | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
+    const [isWatched, setIsWatched] = useState(false)
+    const [showAlertModal, setShowAlertModal] = useState(false)
+    const [alertThreshold, setAlertThreshold] = useState(50)
 
     useEffect(() => {
         if (params.id) {
             fetchAsteroid(params.id as string)
         }
     }, [params.id])
+
+    useEffect(() => {
+        if (asteroid) {
+            checkWatchlistStatus()
+        }
+    }, [asteroid])
 
     const fetchAsteroid = async (id: string) => {
         try {
@@ -54,14 +64,42 @@ export default function AsteroidDetailPage() {
         }
     }
 
-    const handleAddToWatchlist = async () => {
+    const checkWatchlistStatus = async () => {
+        try {
+            const res = await watchlistAPI.getAll()
+            if (res.data.some((item: any) => item.asteroidId === asteroid?.id)) {
+                setIsWatched(true)
+            }
+        } catch (e) {
+            console.error('Failed to check watchlist status', e)
+        }
+    }
+
+    const handleToggleWatchlist = async () => {
         if (!asteroid) return
         try {
-            await watchlistAPI.add(asteroid.id)
-            alert('Added to watchlist!')
+            if (isWatched) {
+                await watchlistAPI.remove(asteroid.id)
+                setIsWatched(false)
+            } else {
+                await watchlistAPI.add(asteroid.id)
+                setIsWatched(true)
+            }
         } catch (err) {
             console.error(err)
-            alert('Failed to add to watchlist')
+            alert('Failed to update watchlist')
+        }
+    }
+
+    const handleCreateAlert = async () => {
+        if (!asteroid) return
+        try {
+            await alertAPI.create({ asteroidId: asteroid.id, threshold: alertThreshold })
+            setShowAlertModal(false)
+            alert(`Alert set for risk score > ${alertThreshold}`)
+        } catch (err) {
+            console.error(err)
+            alert('Failed to create alert')
         }
     }
 
@@ -79,7 +117,7 @@ export default function AsteroidDetailPage() {
                 <div className="glass-card p-12 text-center max-w-2xl mx-auto">
                     <h2 className="text-2xl font-bold text-white mb-2">Asteroid Not Found</h2>
                     <p className="text-cosmic-lavender/70 mb-6">{error || "The requested asteroid could not be found."}</p>
-                    <a href="/" className="btn-primary inline-flex items-center">Return to Dashboard</a>
+                    <a href="/dashboard" className="btn-primary inline-flex items-center">Return to Dashboard</a>
                 </div>
             </div>
         )
@@ -109,16 +147,22 @@ export default function AsteroidDetailPage() {
         } : undefined
     }
 
-    // Fix interface mismatch for OrbitalView
-    // OrbitalView expects an array of objects that match its Asteroid interface
     const orbitalViewProp = [{
         ...mappedAsteroidForView,
-        missDistance: mappedAsteroidForView.missDistanceValue, // Pass km, OrbitalView converts it
+        missDistance: mappedAsteroidForView.missDistanceValue,
     }]
 
     return (
         <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6">
             <div className="max-w-7xl mx-auto">
+                <Link
+                    href="/dashboard"
+                    className="inline-flex items-center gap-2 text-cosmic-lavender hover:text-white transition-colors mb-6 group"
+                >
+                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                    Back to Dashboard
+                </Link>
+
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <div>
@@ -137,13 +181,19 @@ export default function AsteroidDetailPage() {
 
                     <div className="flex gap-3">
                         <button
-                            onClick={handleAddToWatchlist}
+                            onClick={handleToggleWatchlist}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${isWatched
+                                    ? 'bg-cosmic-nebula text-white shadow-lg shadow-cosmic-nebula/20'
+                                    : 'btn-secondary'
+                                }`}
+                        >
+                            <Bookmark className={`w-4 h-4 ${isWatched ? 'fill-white' : ''}`} />
+                            <span className="hidden sm:inline">{isWatched ? 'Watched' : 'Watch'}</span>
+                        </button>
+                        <button
+                            onClick={() => setShowAlertModal(true)}
                             className="btn-secondary flex items-center gap-2"
                         >
-                            <Bookmark className="w-4 h-4" />
-                            <span className="hidden sm:inline">Watch</span>
-                        </button>
-                        <button className="btn-secondary flex items-center gap-2">
                             <Bell className="w-4 h-4" />
                             <span className="hidden sm:inline">Alert</span>
                         </button>
@@ -208,7 +258,7 @@ export default function AsteroidDetailPage() {
                         {/* Dimensional & Physical */}
                         <DataSection title="Physical Characteristics" delay={0.2}>
                             <DataGrid>
-                                <DataItem label="Absolute Magnitude (H)" value={asteroid.absolute_magnitude_h.toString()} />
+                                <DataItem label="Absolute Magnitude (H)" value={asteroid.absolute_magnitude_h?.toString() ?? 'N/A'} />
                                 <DataItem label="Est. Diameter (Min)" value={formatDiameter(diameterMin * 1000)} />
                                 <DataItem label="Est. Diameter (Max)" value={formatDiameter(diameterMax * 1000)} />
                                 <DataItem label="Est. Diameter (Avg)" value={formatDiameter(diameterAvg * 1000)} />
@@ -268,11 +318,59 @@ export default function AsteroidDetailPage() {
                                     <p className="text-cosmic-lavender/70 text-sm">Chat about {asteroid.name} with other researchers</p>
                                 </div>
                             </div>
-                            <a href="/chat" className="btn-primary whitespace-nowrap">Open Community Chat</a>
+                            <Link href="/chat" className="btn-primary whitespace-nowrap">Open Community Chat</Link>
                         </motion.div>
                     </div>
                 </div>
             </div>
+
+            {/* Alert Modal */}
+            {showAlertModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="glass-card p-6 w-full max-w-sm shadow-2xl border-white/20"
+                    >
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-bold text-white">Set Risk Alert</h3>
+                            <button onClick={() => setShowAlertModal(false)} className="text-white/50 hover:text-white">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <p className="text-sm text-cosmic-lavender/70 mb-4">
+                            Receive notifications when this asteroid's calculated risk score exceeds the threshold.
+                        </p>
+
+                        <div className="mb-6">
+                            <div className="flex justify-between text-xs text-white/70 mb-2">
+                                <span>Threshold</span>
+                                <span className="font-bold text-cosmic-nebula">{alertThreshold}</span>
+                            </div>
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={alertThreshold}
+                                onChange={(e) => setAlertThreshold(parseInt(e.target.value))}
+                                className="w-full accent-cosmic-nebula h-2 bg-white/10 rounded-lg appearance-none cursor-pointer"
+                            />
+                            <div className="flex justify-between text-[10px] text-white/30 mt-1">
+                                <span>0 (Low)</span>
+                                <span>100 (Critical)</span>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={handleCreateAlert}
+                            className="w-full btn-primary py-2.5"
+                        >
+                            Create Alert
+                        </button>
+                    </motion.div>
+                </div>
+            )}
         </div>
     )
 }

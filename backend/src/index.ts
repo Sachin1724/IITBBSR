@@ -18,6 +18,7 @@ import { historyRoutes } from './routes/history.routes'
 import { historyController } from './controllers/history.controller'
 import { adminRoutes } from './routes/admin.routes'
 import { chatRoutes } from './routes/chat.routes'
+import { googleAuthRoutes } from './routes/google-auth.routes'
 
 
 const fastify = Fastify({
@@ -73,6 +74,7 @@ async function start() {
 
         // Register routes
         await fastify.register(authRoutes, { prefix: '/api/auth' })
+        await fastify.register(googleAuthRoutes, { prefix: '/api/auth' })
         await fastify.register(asteroidRoutes, { prefix: '/api/asteroids' })
         await fastify.register(watchlistRoutes, { prefix: '/api/watchlist' })
         await fastify.register(alertRoutes, { prefix: '/api/alerts' })
