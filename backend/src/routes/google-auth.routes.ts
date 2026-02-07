@@ -69,7 +69,7 @@ export async function googleAuthRoutes(fastify: FastifyInstance) {
             }
 
             // Generate JWT token
-            const token = fastify.jwt.sign({ userId: user._id }, { expiresIn: '7d' })
+            const token = fastify.jwt.sign({ userId: user._id, name: user.name, role: user.role, avatar: user.avatar }, { expiresIn: '7d' })
 
             // Redirect to frontend with token
             const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000'

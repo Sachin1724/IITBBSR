@@ -145,7 +145,7 @@ export default function LoginPage() {
                             ) : (
                                 <>
                                     {isLogin ? <IoLogIn className="w-5 h-5 icon-glow" /> : <IoPersonAdd className="w-5 h-5 icon-glow" />}
-                                    {isLogin ? 'Sign In' : 'Sign Up'}
+                                    {isLogin ? 'Login' : 'Create Account'}
                                 </>
                             )}
                         </button>

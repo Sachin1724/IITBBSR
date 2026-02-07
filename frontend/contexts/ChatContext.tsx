@@ -179,6 +179,18 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             const payload = JSON.parse(atob(token.split('.')[1]))
             const asteroidMention = message.match(/@(\d{4}[A-Z]{2}\d+)/)?.[1]
 
+            // Optimistic UI update: add message immediately
+            const optimisticMessage: ChatMessage = {
+                id: `temp-${Date.now()}`,
+                userId: payload.userId || payload.id,
+                username: payload.name || 'Anonymous',
+                message,
+                timestamp: new Date(),
+                asteroidMention,
+                userAvatar: payload.avatar
+            }
+            setMessages((prev) => [...prev.slice(-99), optimisticMessage])
+
             console.log('Sending community message to global room')
             socket.emit('send-message', {
                 asteroidId: 'global',
@@ -199,6 +211,17 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             const token = localStorage.getItem('token')
             if (!token) return
             const payload = JSON.parse(atob(token.split('.')[1]))
+
+            // Optimistic UI update: add message immediately
+            const optimisticMessage: PrivateMessage = {
+                id: `temp-${Date.now()}`,
+                conversationId: targetId,
+                senderId: payload.userId || payload.id,
+                senderName: payload.name || 'Anonymous',
+                message,
+                createdAt: new Date()
+            }
+            setPrivateMessages((prev) => [...prev, optimisticMessage])
 
             socket.emit('send-private-message', {
                 conversationId: targetId,
