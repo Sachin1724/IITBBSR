@@ -59,9 +59,16 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         console.log('🔌 Connecting to Chat Socket:', socketUrl)
 
         const socketInstance = io(socketUrl, {
-            transports: ['websocket', 'polling'], // Fallback to polling if websocket fails
+            transports: ['websocket'], // Use websocket only for lowest latency
             autoConnect: true,
-            withCredentials: true, // Important for CORS
+            withCredentials: true,
+            reconnection: true,
+            reconnectionDelay: 500,
+            reconnectionAttempts: 10,
+            timeout: 10000,
+            forceNew: false, // Reuse existing connection
+            upgrade: false, // Don't upgrade from polling
+            rememberUpgrade: true,
         })
 
         socketInstance.on('connect', () => {

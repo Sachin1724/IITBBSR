@@ -84,24 +84,39 @@ export function setupChatSocket(io: SocketIOServer) {
             message: string
         }) => {
             try {
-                const chatMessage = new ChatMessage({
+                // Generate ID immediately for optimistic rendering
+                const tempId = new mongoose.Types.ObjectId()
+                const timestamp = new Date()
+
+                // ⚡ EMIT IMMEDIATELY - Don't wait for database
+                const messagePayload = {
+                    id: tempId,
                     asteroidId: data.asteroidId,
-                    userId: new mongoose.Types.ObjectId(data.userId),
+                    userId: data.userId,
                     userName: data.userName,
-                    message: data.message,
-                })
-
-                await chatMessage.save()
-
-                io.to(`asteroid:${data.asteroidId}`).emit('new-message', {
-                    id: chatMessage._id,
-                    asteroidId: chatMessage.asteroidId,
-                    userId: chatMessage.userId,
-                    userName: chatMessage.userName,
                     userAvatar: data.userAvatar,
                     userBio: data.userBio,
-                    message: chatMessage.message,
-                    createdAt: chatMessage.createdAt,
+                    message: data.message,
+                    createdAt: timestamp,
+                }
+
+                io.to(`asteroid:${data.asteroidId}`).emit('new-message', messagePayload)
+
+                // 💾 Save to database asynchronously (don't await)
+                setImmediate(async () => {
+                    try {
+                        const chatMessage = new ChatMessage({
+                            _id: tempId,
+                            asteroidId: data.asteroidId,
+                            userId: new mongoose.Types.ObjectId(data.userId),
+                            userName: data.userName,
+                            message: data.message,
+                            createdAt: timestamp
+                        })
+                        await chatMessage.save()
+                    } catch (dbError) {
+                        console.error('Error saving message to DB:', dbError)
+                    }
                 })
             } catch (error) {
                 console.error('Error sending message:', error)
@@ -117,27 +132,42 @@ export function setupChatSocket(io: SocketIOServer) {
             message: string
         }) => {
             try {
-                const privateMsg = new PrivateMessage({
-                    conversationId: new mongoose.Types.ObjectId(data.conversationId),
-                    senderId: new mongoose.Types.ObjectId(data.senderId),
-                    message: data.message,
-                })
+                // Generate ID immediately
+                const tempId = new mongoose.Types.ObjectId()
+                const timestamp = new Date()
 
-                await privateMsg.save()
-
-                // Update conversation last message
-                await Conversation.findByIdAndUpdate(data.conversationId, {
-                    lastMessage: data.message,
-                    updatedAt: new Date()
-                })
-
-                io.to(`chat:${data.conversationId}`).emit('new-private-message', {
-                    id: privateMsg._id,
-                    conversationId: privateMsg.conversationId,
-                    senderId: privateMsg.senderId,
+                // ⚡ EMIT IMMEDIATELY
+                const messagePayload = {
+                    id: tempId,
+                    conversationId: data.conversationId,
+                    senderId: data.senderId,
                     senderName: data.senderName,
-                    message: privateMsg.message,
-                    createdAt: privateMsg.createdAt,
+                    message: data.message,
+                    createdAt: timestamp,
+                }
+
+                io.to(`chat:${data.conversationId}`).emit('new-private-message', messagePayload)
+
+                // 💾 Save to database asynchronously
+                setImmediate(async () => {
+                    try {
+                        const privateMsg = new PrivateMessage({
+                            _id: tempId,
+                            conversationId: new mongoose.Types.ObjectId(data.conversationId),
+                            senderId: new mongoose.Types.ObjectId(data.senderId),
+                            message: data.message,
+                            createdAt: timestamp
+                        })
+                        await privateMsg.save()
+
+                        // Update conversation last message
+                        await Conversation.findByIdAndUpdate(data.conversationId, {
+                            lastMessage: data.message,
+                            updatedAt: timestamp
+                        })
+                    } catch (dbError) {
+                        console.error('Error saving private message to DB:', dbError)
+                    }
                 })
             } catch (error) {
                 console.error('Error sending private message:', error)
