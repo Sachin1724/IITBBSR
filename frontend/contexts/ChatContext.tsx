@@ -55,9 +55,13 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     const [onlineUsers, setOnlineUsers] = useState(0)
 
     useEffect(() => {
-        const socketInstance = io('http://localhost:4000', {
-            transports: ['websocket'],
+        const socketUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+        console.log('🔌 Connecting to Chat Socket:', socketUrl)
+
+        const socketInstance = io(socketUrl, {
+            transports: ['websocket', 'polling'], // Fallback to polling if websocket fails
             autoConnect: true,
+            withCredentials: true, // Important for CORS
         })
 
         socketInstance.on('connect', () => {
