@@ -2,16 +2,18 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { AlertTriangle, TrendingUp, Calendar, Search } from 'lucide-react'
+import { AlertTriangle, TrendingUp, Calendar, Search, Globe, List } from 'lucide-react'
 import { asteroidAPI, type Asteroid } from '@/lib/api'
 import { calculateRiskScore, getRiskLevel } from '@/lib/utils'
 import AsteroidCard from '@/components/AsteroidCard'
 import StatsCard from '@/components/StatsCard'
+import { OrbitalView } from '@/components/visualization/OrbitalView'
 
 export default function DashboardPage() {
     const [asteroids, setAsteroids] = useState<Asteroid[]>([])
     const [loading, setLoading] = useState(true)
     const [searchQuery, setSearchQuery] = useState('')
+    const [viewMode, setViewMode] = useState<'list' | 'orbital'>('list')
 
     useEffect(() => {
         fetchAsteroids()
@@ -50,6 +52,20 @@ export default function DashboardPage() {
     const filteredAsteroids = asteroids.filter((asteroid) =>
         asteroid.name.toLowerCase().includes(searchQuery.toLowerCase())
     )
+
+    // Transform asteroids for orbital view
+    const orbitalAsteroids = asteroids.map((a) => ({
+        id: a.id,
+        name: a.name,
+        closeApproachDate: a.close_approach_data[0].close_approach_date,
+        missDistance: parseFloat(a.close_approach_data[0].miss_distance.lunar),
+        velocity: parseFloat(a.close_approach_data[0].relative_velocity.kilometers_per_second),
+        diameter:
+            ((a.estimated_diameter.meters.estimated_diameter_min +
+                a.estimated_diameter.meters.estimated_diameter_max) /
+                2),
+        isHazardous: a.is_potentially_hazardous_asteroid,
+    }))
 
     const stats = {
         total: asteroids.length,
@@ -110,42 +126,71 @@ export default function DashboardPage() {
                 />
             </div>
 
-            {/* Search */}
+            {/* View Toggle */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="mb-8"
+                className="mb-6 flex items-center gap-4"
             >
-                <div className="relative">
-                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-cosmic-lavender/50 w-5 h-5" />
-                    <input
-                        type="text"
-                        placeholder="Search asteroids by name..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="input-cosmic pl-12"
-                    />
+                <div className="flex bg-[#1B1A55] rounded-lg p-1 border border-[#535C91]/30">
+                    <button
+                        onClick={() => setViewMode('list')}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${viewMode === 'list'
+                                ? 'bg-[#535C91] text-white'
+                                : 'text-[#9290C3] hover:text-white'
+                            }`}
+                    >
+                        <List className="w-4 h-4" />
+                        <span>List View</span>
+                    </button>
+                    <button
+                        onClick={() => setViewMode('orbital')}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${viewMode === 'orbital'
+                                ? 'bg-[#535C91] text-white'
+                                : 'text-[#9290C3] hover:text-white'
+                            }`}
+                    >
+                        <Globe className="w-4 h-4" />
+                        <span>Orbital View</span>
+                    </button>
                 </div>
+
+                {viewMode === 'list' && (
+                    <div className="flex-1 relative">
+                        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-cosmic-lavender/50 w-5 h-5" />
+                        <input
+                            type="text"
+                            placeholder="Search asteroids by name..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="input-cosmic pl-12 w-full"
+                        />
+                    </div>
+                )}
             </motion.div>
 
-            {/* Asteroids Grid */}
+            {/* Content */}
             {loading ? (
                 <div className="flex items-center justify-center h-64">
                     <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-cosmic-lavender"></div>
                 </div>
+            ) : viewMode === 'orbital' ? (
+                <OrbitalView asteroids={orbitalAsteroids} />
             ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {filteredAsteroids.map((asteroid, index) => (
-                        <AsteroidCard key={asteroid.id} asteroid={asteroid} delay={index * 0.05} />
-                    ))}
-                </div>
-            )}
+                <>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                        {filteredAsteroids.map((asteroid, index) => (
+                            <AsteroidCard key={asteroid.id} asteroid={asteroid} delay={index * 0.05} />
+                        ))}
+                    </div>
 
-            {filteredAsteroids.length === 0 && !loading && (
-                <div className="text-center py-16">
-                    <p className="text-cosmic-lavender/50 text-lg">No asteroids found</p>
-                </div>
+                    {filteredAsteroids.length === 0 && (
+                        <div className="text-center py-16">
+                            <p className="text-cosmic-lavender/50 text-lg">No asteroids found</p>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     )
