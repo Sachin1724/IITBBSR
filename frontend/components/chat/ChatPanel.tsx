@@ -187,20 +187,27 @@ export function ChatPanel() {
                     <div className="flex-1 overflow-y-auto flex flex-col relative bg-[#070F2B]">
                         {activeTab === 'community' ? (
                             <div className="flex-1 p-4 space-y-2 custom-scrollbar">
-                                {messages.map((msg, index) => (
-                                    <ChatMessage
-                                        key={msg.id || index}
-                                        userId={msg.userId}
-                                        username={msg.username}
-                                        message={msg.message}
-                                        timestamp={msg.timestamp}
-                                        isOwnMessage={msg.username === currentUser.name}
-                                        asteroidMention={msg.asteroidMention}
-                                        userAvatar={msg.userAvatar}
-                                        userBio={msg.userBio}
-                                        onInvite={() => setActiveTab('personal')}
-                                    />
-                                ))}
+                                {messages.map((msg, index) => {
+                                    // Check if previous message is from same user for grouping
+                                    const prevMsg = index > 0 ? messages[index - 1] : null
+                                    const isGrouped = prevMsg && prevMsg.userId === msg.userId
+
+                                    return (
+                                        <ChatMessage
+                                            key={msg.id || index}
+                                            userId={msg.userId}
+                                            username={msg.username}
+                                            message={msg.message}
+                                            timestamp={msg.timestamp}
+                                            isOwnMessage={msg.username === currentUser.name}
+                                            asteroidMention={msg.asteroidMention}
+                                            userAvatar={msg.userAvatar}
+                                            userBio={msg.userBio}
+                                            onInvite={() => setActiveTab('personal')}
+                                            isGrouped={isGrouped}
+                                        />
+                                    )
+                                })}
                                 <div ref={messagesEndRef} />
                             </div>
                         ) : (
@@ -233,15 +240,22 @@ export function ChatPanel() {
                                             </button>
                                         </div>
                                         <div className="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
-                                            {privateMessages.filter(m => m.conversationId === activeChat._id).map((msg, index) => (
-                                                <ChatMessage
-                                                    key={msg.id || index}
-                                                    username={msg.senderName}
-                                                    message={msg.message}
-                                                    timestamp={msg.createdAt}
-                                                    isOwnMessage={msg.senderId === currentUser.id}
-                                                />
-                                            ))}
+                                            {privateMessages.filter(m => m.conversationId === activeChat._id).map((msg, index, filteredMsgs) => {
+                                                // Check if previous message is from same sender for grouping
+                                                const prevMsg = index > 0 ? filteredMsgs[index - 1] : null
+                                                const isGrouped = prevMsg && prevMsg.senderId === msg.senderId
+
+                                                return (
+                                                    <ChatMessage
+                                                        key={msg.id || index}
+                                                        username={msg.senderName}
+                                                        message={msg.message}
+                                                        timestamp={msg.createdAt}
+                                                        isOwnMessage={msg.senderId === currentUser.id}
+                                                        isGrouped={isGrouped}
+                                                    />
+                                                )
+                                            })}
                                             <div ref={messagesEndRef} />
                                         </div>
                                     </div>
@@ -361,8 +375,9 @@ export function ChatPanel() {
                             </div>
                         </div>
                     )}
-                </div>
-            )}
+                </div >
+            )
+            }
         </>
     )
 }

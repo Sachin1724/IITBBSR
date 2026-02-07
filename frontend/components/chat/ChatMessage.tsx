@@ -16,6 +16,7 @@ interface ChatMessageProps {
     isOwnMessage?: boolean
     asteroidMention?: string
     onInvite?: () => void
+    isGrouped?: boolean // WhatsApp-style grouping
 }
 
 export function ChatMessage({
@@ -27,6 +28,7 @@ export function ChatMessage({
     timestamp,
     isOwnMessage = false,
     onInvite,
+    isGrouped = false,
 }: ChatMessageProps) {
     const { startPrivateChat } = useChat()
 
@@ -95,42 +97,47 @@ export function ChatMessage({
     }
 
     return (
-        <div className={`flex gap-3 ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'} mb-4 items-end`}>
-            {/* Avatar with Tooltip */}
-            <div className="relative group shrink-0">
-                <div className="w-8 h-8 rounded-full border border-[#535C91]/30 bg-[#1B1A55] overflow-hidden flex items-center justify-center">
-                    {userAvatar ? (
-                        <img src={userAvatar} alt={username} className="w-full h-full object-cover" />
-                    ) : (
-                        <IoPerson className="w-4 h-4 text-[#9290C3] icon-glow" />
+        <div className={`flex gap-3 ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'} ${isGrouped ? 'mb-1' : 'mb-4'} items-end`}>
+            {/* Avatar with Tooltip - only show if not grouped */}
+            {!isGrouped ? (
+                <div className="relative group shrink-0">
+                    <div className="w-8 h-8 rounded-full border border-[#535C91]/30 bg-[#1B1A55] overflow-hidden flex items-center justify-center">
+                        {userAvatar ? (
+                            <img src={userAvatar} alt={username} className="w-full h-full object-cover" />
+                        ) : (
+                            <IoPerson className="w-4 h-4 text-[#9290C3] icon-glow" />
+                        )}
+                    </div>
+
+                    {/* Profile Tooltip */}
+                    {!isOwnMessage && onInvite && (
+                        <div className="absolute bottom-full left-0 mb-2 w-48 bg-[#070F2B] border border-[#535C91]/50 rounded-lg p-3 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-50">
+                            <div className="font-bold text-white text-sm mb-1">{username}</div>
+                            {userBio && (
+                                <div className="text-xs text-[#9290C3] line-clamp-2 mb-3">{userBio}</div>
+                            )}
+                            {!userBio && (
+                                <div className="text-xs text-[#9290C3]/60 italic mb-3">Researcher at Cosmic Watch</div>
+                            )}
+
+                            <button
+                                onClick={handleInvite}
+                                className="w-full flex items-center justify-center gap-2 bg-[#535C91] hover:bg-[#9290C3] text-white py-1.5 rounded text-xs font-semibold transition-all transform active:scale-95"
+                            >
+                                <IoChatbubbleEllipses className="w-3 h-3 icon-glow" />
+                                Send Invite
+                            </button>
+                        </div>
                     )}
                 </div>
-
-                {/* Profile Tooltip */}
-                {!isOwnMessage && onInvite && (
-                    <div className="absolute bottom-full left-0 mb-2 w-48 bg-[#070F2B] border border-[#535C91]/50 rounded-lg p-3 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-50">
-                        <div className="font-bold text-white text-sm mb-1">{username}</div>
-                        {userBio && (
-                            <div className="text-xs text-[#9290C3] line-clamp-2 mb-3">{userBio}</div>
-                        )}
-                        {!userBio && (
-                            <div className="text-xs text-[#9290C3]/60 italic mb-3">Researcher at Cosmic Watch</div>
-                        )}
-
-                        <button
-                            onClick={handleInvite}
-                            className="w-full flex items-center justify-center gap-2 bg-[#535C91] hover:bg-[#9290C3] text-white py-1.5 rounded text-xs font-semibold transition-all transform active:scale-95"
-                        >
-                            <IoChatbubbleEllipses className="w-3 h-3 icon-glow" />
-                            Send Invite
-                        </button>
-                    </div>
-                )}
-            </div>
+            ) : (
+                // Placeholder to maintain spacing when grouped
+                <div className="w-8 shrink-0"></div>
+            )}
 
             {/* Message Bubble */}
             <div className={`flex flex-col ${isOwnMessage ? 'items-end' : 'items-start'} max-w-[70%]`}>
-                {!isOwnMessage && (
+                {!isOwnMessage && !isGrouped && (
                     <span className="text-xs text-[#9290C3]/60 mb-1 ml-1">{username}</span>
                 )}
 
@@ -145,9 +152,11 @@ export function ChatMessage({
                     </div>
                 </div>
 
-                <span className="text-[10px] text-[#9290C3]/40 mt-1 mx-1">
-                    {formatDistanceToNow(new Date(timestamp), { addSuffix: true })}
-                </span>
+                {!isGrouped && (
+                    <span className="text-[10px] text-[#9290C3]/40 mt-1 mx-1">
+                        {formatDistanceToNow(new Date(timestamp), { addSuffix: true })}
+                    </span>
+                )}
             </div>
         </div>
     )
