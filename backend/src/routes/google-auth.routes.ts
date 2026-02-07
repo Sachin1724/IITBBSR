@@ -6,10 +6,15 @@ import axios from 'axios'
 export async function googleAuthRoutes(fastify: FastifyInstance) {
     // Initiate Google OAuth
     fastify.get('/google', async (request, reply) => {
+        console.log('🔍 Google OAuth Debug:')
+        console.log('Client ID:', config.google.clientId)
+        console.log('Callback URL:', config.google.callbackURL)
+
         const redirectUri = config.google.callbackURL
         const scope = encodeURIComponent('profile email')
         const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.google.clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`
 
+        console.log('Generated OAuth URL:', googleAuthUrl)
         return reply.redirect(googleAuthUrl)
     })
 

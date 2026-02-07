@@ -1,18 +1,23 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useChat } from '@/contexts/ChatContext'
 import { ChatMessage } from './ChatMessage'
-import { IoChatbubbles, IoClose, IoSend, IoPeople, IoPerson } from 'react-icons/io5'
+import { IoClose, IoChatbubbleEllipses, IoPeople, IoPerson, IoSend } from 'react-icons/io5'
 
-export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
-    const [isOpen, setIsOpen] = useState(isFullPage)
+export function ChatPanel() {
+    const pathname = usePathname()
+    const [isOpen, setIsOpen] = useState(false)
     const [inputMessage, setInputMessage] = useState('')
     const [activeTab, setActiveTab] = useState<'community' | 'personal'>('community')
     const [searchQuery, setSearchQuery] = useState('')
     const [searchResults, setSearchResults] = useState<any[]>([])
     const [isSearching, setIsSearching] = useState(false)
     const [showSearch, setShowSearch] = useState(false)
+    const [hasUnread, setHasUnread] = useState(false)
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
 
     const {
         messages,
@@ -33,6 +38,7 @@ export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
     const [currentUser, setCurrentUser] = useState({ name: 'User', id: '' })
     useEffect(() => {
         const token = localStorage.getItem('token')
+        setIsAuthenticated(!!token)
         if (token) {
             try {
                 const payload = JSON.parse(atob(token.split('.')[1]))
@@ -40,9 +46,18 @@ export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
                     name: payload.name || 'User',
                     id: payload.userId || payload.id
                 })
-            } catch (e) { }
+            } catch (e) {
+                setIsAuthenticated(false)
+            }
         }
     }, [])
+
+    // Hide chat on login/signup pages and when not authenticated
+    const shouldHideChat = !isAuthenticated || pathname === '/login' || pathname === '/signup' || pathname === '/reset-password'
+
+    if (shouldHideChat) {
+        return null
+    }
 
     // Auto-scroll
     useEffect(() => {
