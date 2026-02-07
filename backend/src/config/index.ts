@@ -20,19 +20,11 @@ export const config = {
             const allowedOrigins = [
                 'http://localhost:3000',
                 'http://localhost:3001',
-                'http://localhost:3002',
-                'http://localhost:3003',
-                'http://localhost:3004',
-                'http://localhost:3005',
-                'http://localhost:3006',
-                'http://localhost:3007',
-                'http://localhost:3008',
-                'http://localhost:3009',
-                'http://localhost:3010',
-                'http://localhost:3011',
-                'http://localhost:3012',
-            ];
-            if (!origin || allowedOrigins.includes(origin)) {
+                process.env.CORS_ORIGIN,
+                process.env.FRONTEND_URL
+            ].filter(Boolean);
+
+            if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
                 cb(null, true);
                 return;
             }

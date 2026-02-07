@@ -45,7 +45,9 @@ Because this is a full-stack application with a persistent Node.js backend (WebS
     - **Start Command**: `npm start`
 4.  **Environment Variables**:
     - Add all variables from your `backend/.env` file.
-    - **Important**: For `MONGODB_URI`, use a cloud database like **MongoDB Atlas**. Localhost won't work.
+    - > [!IMPORTANT]
+    - > **MONGODB_URI**: You MUST use a cloud database like **MongoDB Atlas**. Localhost (`127.0.0.1` or `::1`) will NOT work in production on Render.
+    - > **CORS_ORIGIN**: Set this to your Netlify Frontend URL.
 5.  **Deploy**: Click Create Web Service. Copy the URL (e.g., `https://cosmic-watch-backend.onrender.com`).
 
 ### Part 2: Frontend Deployment (Netlify)
