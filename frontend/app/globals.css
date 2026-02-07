@@ -19,6 +19,8 @@
     font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 
+
+
   /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
@@ -84,8 +86,15 @@
 
 /* Starfield background animation */
 @keyframes twinkle {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 1;
+  }
 }
 
 .star {

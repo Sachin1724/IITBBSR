@@ -1,11 +1,12 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { User } from '../models/User'
 
-export interface AuthRequest extends FastifyRequest {
-    user?: {
+export type AuthRequest = FastifyRequest & {
+    user: {
         id: string
         email: string
         role: string
+        userId?: string
     }
 }
 
@@ -38,3 +39,6 @@ export function requireRole(role: string) {
         }
     }
 }
+
+export const requireAdmin = requireRole('admin')
+

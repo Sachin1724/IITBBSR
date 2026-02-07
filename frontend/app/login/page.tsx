@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { LogIn, UserPlus } from 'lucide-react'
 import { authAPI } from '@/lib/api'
+import { ViewPasswordToggle } from '@/components/auth/ViewPasswordToggle'
 
 export default function LoginPage() {
     const router = useRouter()
     const [isLogin, setIsLogin] = useState(true)
+    const [showPassword, setShowPassword] = useState(false)
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -99,17 +101,35 @@ export default function LoginPage() {
                             />
                         </div>
 
-                        <div>
+                        <div className="relative">
                             <label className="block text-cosmic-lavender/70 text-sm mb-2">Password</label>
-                            <input
-                                type="password"
-                                value={formData.password}
-                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                className="input-cosmic"
-                                placeholder="••••••••"
-                                required
-                            />
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    value={formData.password}
+                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                    className="input-cosmic pr-12"
+                                    placeholder="••••••••"
+                                    required
+                                />
+                                <ViewPasswordToggle
+                                    show={showPassword}
+                                    onToggle={() => setShowPassword(!showPassword)}
+                                />
+                            </div>
                         </div>
+
+                        {isLogin && (
+                            <div className="flex justify-end">
+                                <button
+                                    type="button"
+                                    onClick={() => router.push('/reset-password')}
+                                    className="text-xs text-cosmic-lavender/60 hover:text-white transition-colors"
+                                >
+                                    Forgot Password?
+                                </button>
+                            </div>
+                        )}
 
                         <button
                             type="submit"

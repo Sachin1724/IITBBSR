@@ -6,6 +6,15 @@ export interface IUser extends Document {
     password: string
     name: string
     role: 'user' | 'admin'
+    // Profile fields
+    bio?: string
+    location?: string
+    organization?: string
+    avatar?: string
+    resetOTP?: string
+    resetOTPExpires?: Date
+    lastLogin?: Date
+    savedAsteroids?: string[]
     createdAt: Date
     comparePassword(candidatePassword: string): Promise<boolean>
 }
@@ -33,6 +42,40 @@ const userSchema = new Schema<IUser>({
         enum: ['user', 'admin'],
         default: 'user',
     },
+    // Profile fields
+    bio: {
+        type: String,
+        trim: true,
+        maxlength: 500,
+    },
+    location: {
+        type: String,
+        trim: true,
+        maxlength: 100,
+    },
+    organization: {
+        type: String,
+        trim: true,
+        maxlength: 100,
+    },
+    avatar: {
+        type: String,
+        trim: true,
+    },
+    resetOTP: {
+        type: String,
+        select: false,
+    },
+    resetOTPExpires: {
+        type: Date,
+        select: false,
+    },
+    lastLogin: {
+        type: Date,
+    },
+    savedAsteroids: [{
+        type: String,
+    }],
     createdAt: {
         type: Date,
         default: Date.now,

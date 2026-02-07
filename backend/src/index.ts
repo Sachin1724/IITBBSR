@@ -14,6 +14,11 @@ import { alertRoutes } from './routes/alerts.routes'
 import { simulationRoutes } from './routes/simulation.routes'
 import { setupChatSocket } from './sockets/chat.socket'
 import { startDataRefreshScheduler } from './schedulers/dataRefresh'
+import { historyRoutes } from './routes/history.routes'
+import { historyController } from './controllers/history.controller'
+import { adminRoutes } from './routes/admin.routes'
+import { chatRoutes } from './routes/chat.routes'
+
 
 const fastify = Fastify({
     logger: {
@@ -63,15 +68,22 @@ async function start() {
             return { status: 'ok', timestamp: new Date().toISOString() }
         })
 
+        // Start schedulers
+        startDataRefreshScheduler()
+
         // Register routes
         await fastify.register(authRoutes, { prefix: '/api/auth' })
         await fastify.register(asteroidRoutes, { prefix: '/api/asteroids' })
         await fastify.register(watchlistRoutes, { prefix: '/api/watchlist' })
         await fastify.register(alertRoutes, { prefix: '/api/alerts' })
         await fastify.register(simulationRoutes, { prefix: '/api/simulation' })
+        await fastify.register(historyRoutes, { prefix: '/api/history' })
+        await fastify.register(adminRoutes, { prefix: '/api/admin' })
+        await fastify.register(chatRoutes, { prefix: '/api/chat' })
 
-        // Start schedulers
-        startDataRefreshScheduler()
+
+        // Seed data
+        await historyController.seedDatabase()
 
         // Start server
         await fastify.listen({ port: config.port, host: '0.0.0.0' })

@@ -39,6 +39,9 @@ const config: Config = {
             backdropBlur: {
                 xs: '2px',
             },
+            fontFamily: {
+                sans: ['var(--font-plus-jakarta)', 'sans-serif'],
+            },
         },
     },
     plugins: [],

@@ -18,6 +18,16 @@ export interface IAsteroid extends Document {
     }>
     riskScore: number
     lastUpdated: Date
+    orbitalData?: {
+        semiMajorAxis?: number
+        eccentricity?: number
+        inclination?: number
+        longitudeAscendingNode?: number
+        perihelionArgument?: number
+        meanAnomaly?: number
+        epoch?: number
+        period?: number
+    }
 }
 
 const asteroidSchema = new Schema<IAsteroid>({
@@ -59,6 +69,16 @@ const asteroidSchema = new Schema<IAsteroid>({
     lastUpdated: {
         type: Date,
         default: Date.now,
+    },
+    orbitalData: {
+        semiMajorAxis: Number,
+        eccentricity: Number,
+        inclination: Number,
+        longitudeAscendingNode: Number,
+        perihelionArgument: Number,
+        meanAnomaly: Number,
+        epoch: Number,
+        period: Number,
     },
 })
 

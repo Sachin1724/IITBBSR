@@ -16,6 +16,27 @@ export const config = {
         apiUrl: process.env.NASA_API_URL || 'https://api.nasa.gov/neo/rest/v1',
     },
     cors: {
-        origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+        origin: (origin: string | undefined, cb: (err: Error | null, allow: boolean) => void) => {
+            const allowedOrigins = [
+                'http://localhost:3000',
+                'http://localhost:3001',
+                'http://localhost:3002',
+                'http://localhost:3003',
+                'http://localhost:3004',
+                'http://localhost:3005',
+                'http://localhost:3006',
+                'http://localhost:3007',
+                'http://localhost:3008',
+                'http://localhost:3009',
+                'http://localhost:3010',
+                'http://localhost:3011',
+                'http://localhost:3012',
+            ];
+            if (!origin || allowedOrigins.includes(origin)) {
+                cb(null, true);
+                return;
+            }
+            cb(new Error("Not allowed by CORS"), false);
+        }
     },
 }

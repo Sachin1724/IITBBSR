@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
-import { Inter, Space_Grotesk } from 'next/font/google'
+import { Plus_Jakarta_Sans, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import Navigation from '@/components/Navigation'
 import Starfield from '@/components/Starfield'
 import { ChatProvider } from '@/contexts/ChatContext'
 import { ChatPanel } from '@/components/chat/ChatPanel'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
+const plusJakartaScans = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-plus-jakarta' })
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk' })
 
 export const metadata: Metadata = {
@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className="dark">
-            <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans`}>
+            <body className={`${plusJakartaScans.variable} ${spaceGrotesk.variable} font-sans`}>
                 <ChatProvider>
                     <Starfield />
                     <Navigation />

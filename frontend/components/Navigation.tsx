@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Sparkles, AlertCircle, Bookmark, Home, User, LogIn } from 'lucide-react'
+import { Sparkles, AlertCircle, Bookmark, Home, User, LogIn, History, Shield, MessageSquare } from 'lucide-react'
 
 export default function Navigation() {
+    const [isAdmin, setIsAdmin] = useState(false)
     const [scrolled, setScrolled] = useState(false)
     const [isAuthenticated, setIsAuthenticated] = useState(false)
 
@@ -15,9 +16,15 @@ export default function Navigation() {
         }
         window.addEventListener('scroll', handleScroll)
 
-        // Check authentication
+        // Check authentication and role
         const token = localStorage.getItem('token')
-        setIsAuthenticated(!!token)
+        if (token) {
+            setIsAuthenticated(true)
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]))
+                setIsAdmin(payload.role === 'admin')
+            } catch (e) { }
+        }
 
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
@@ -50,16 +57,24 @@ export default function Navigation() {
                         <NavLink href="/simulation" icon={<Sparkles className="w-4 h-4" />}>
                             Simulation
                         </NavLink>
+                        <NavLink href="/chat" icon={<MessageSquare className="w-4 h-4" />}>
+                            Community
+                        </NavLink>
                         <NavLink href="/watchlist" icon={<Bookmark className="w-4 h-4" />}>
                             Watchlist
                         </NavLink>
-                        <NavLink href="/alerts" icon={<AlertCircle className="w-4 h-4" />}>
-                            Alerts
+                        <NavLink href="/history" icon={<History className="w-4 h-4" />}>
+                            History
                         </NavLink>
                     </div>
 
                     {/* Auth Section */}
                     <div className="flex items-center space-x-4">
+                        {isAdmin && (
+                            <Link href="/admin" className="p-2 text-cosmic-lavender hover:text-white transition-colors" title="Admin Dashboard">
+                                <Shield className="w-5 h-5" />
+                            </Link>
+                        )}
                         {isAuthenticated ? (
                             <Link href="/profile" className="btn-secondary flex items-center space-x-2">
                                 <User className="w-4 h-4" />

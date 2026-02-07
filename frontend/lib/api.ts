@@ -56,6 +56,36 @@ export interface Asteroid {
             kilometers: string
         }
     }>
+    orbital_data?: {
+        orbit_id: string
+        orbit_determination_date: string
+        first_observation_date: string
+        last_observation_date: string
+        data_arc_in_days: number
+        observations_used: number
+        orbit_uncertainty: string
+        minimum_orbit_intersection: string
+        jupiter_tisserand_invariant: string
+        epoch_osculation: string
+        eccentricity: string
+        semi_major_axis: string
+        inclination: string
+        ascending_node_longitude: string
+        orbital_period: string
+        perihelion_distance: string
+        perihelion_argument: string
+        aphelion_distance: string
+        perihelion_time: string
+        mean_anomaly: string
+        mean_motion: string
+        equinox: string
+        orbit_class?: {
+            orbit_class_type: string
+            orbit_class_description: string
+            orbit_class_range: string
+        }
+    }
+    is_sentry_object?: boolean
     riskScore?: number
 }
 
@@ -89,6 +119,17 @@ export const authAPI = {
     login: (data: { email: string; password: string }) =>
         api.post('/api/auth/login', data),
     getProfile: () => api.get('/api/auth/profile'),
+    forgotPassword: (email: string) => api.post('/api/auth/forgot-password', { email }),
+    resetPassword: (data: any) => api.post('/api/auth/reset-password', data),
+}
+
+export const adminAPI = {
+    getStats: () => api.get('/api/admin/stats'),
+    getUsers: (query?: string) => api.get('/api/admin/users' + (query ? `?q=${query}` : '')),
+    resetPassword: (data: { userId: string; newPassword: string }) =>
+        api.post('/api/admin/reset-password', data),
+    updateRole: (data: { userId: string; role: string }) =>
+        api.put('/api/admin/update-role', data),
 }
 
 // Asteroid APIs
@@ -114,6 +155,29 @@ export const alertAPI = {
     update: (id: string, data: { threshold?: number; enabled?: boolean }) =>
         api.put(`/api/alerts/${id}`, data),
     delete: (id: string) => api.delete(`/api/alerts/${id}`),
+}
+
+export interface HistoricalImpact {
+    _id: string
+    name: string
+    date: string
+    location: string
+    energy: string
+    impactType: string
+    description: string
+}
+
+// History APIs
+export const historyAPI = {
+    getAll: () => api.get<HistoricalImpact[]>('/api/history'),
+}
+
+// Personal Chat APIs
+export const chatAPI = {
+    searchUsers: (query: string) => api.get<User[]>(`/api/chat/search-users?q=${query}`),
+    getConversations: () => api.get<any[]>('/api/chat/conversations'),
+    getMessages: (conversationId: string) =>
+        api.get<any[]>(`/api/chat/conversations/${conversationId}/messages`),
 }
 
 export default api

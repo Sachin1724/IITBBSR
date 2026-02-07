@@ -1,0 +1,62 @@
+[
+    {
+        "name": "Chelyabinsk Meteor",
+        "date": "2013-02-15",
+        "location": "Chelyabinsk Oblast, Russia",
+        "energy": "440-500 kilotons",
+        "impactType": "Airburst",
+        "description": "A 20-meter near-Earth asteroid entered Earth's atmosphere over Russia. It exploded in an air burst 29.7 km (18.5 mi) above the ground. The explosion generated a shock wave that injured over 1,500 people and damaged 7,200 buildings.",
+        "coordinates": {
+            "lat": 55.1644,
+            "lon": 61.4368
+        }
+    },
+    {
+        "name": "Tunguska Event",
+        "date": "1908-06-30",
+        "location": "Podkamennaya Tunguska River, Siberia, Russia",
+        "energy": "12 megatons",
+        "impactType": "Airburst",
+        "description": "The largest impact event on Earth in recorded history. A massive explosion flattened 2,000 square kilometers (770 sq mi) of forest. It is believed to have been caused by the air burst of a stony meteoroid about 50-60 meters in size.",
+        "coordinates": {
+            "lat": 60.9167,
+            "lon": 101.95
+        }
+    },
+    {
+        "name": "Barringer Crater",
+        "date": "49000 BC",
+        "location": "Arizona, USA",
+        "energy": "10 megatons",
+        "impactType": "Crater Formation",
+        "description": "Also known as Meteor Crater. It was formed by the impact of a nickel-iron meteorite about 50 meters (160 ft) across. The crater is about 1,200 m (3,900 ft) in diameter and 170 m (560 ft) deep.",
+        "coordinates": {
+            "lat": 35.0272,
+            "lon": -111.0228
+        }
+    },
+    {
+        "name": "Chicxulub Impactor",
+        "date": "66000000 BC",
+        "location": "Yucatán Peninsula, Mexico",
+        "energy": "100 teratons",
+        "impactType": "Extinction Event",
+        "description": "A massive asteroid or comet about 10 to 15 kilometers in diameter. The impact created the Chicxulub crater and triggered a mass extinction event that wiped out 75% of plant and animal species on Earth, including non-avian dinosaurs.",
+        "coordinates": {
+            "lat": 21.4,
+            "lon": -89.5167
+        }
+    },
+    {
+        "name": "Vredefort Impactor",
+        "date": "2023000000 BC",
+        "location": "Free State, South Africa",
+        "energy": "Unknown (Massive)",
+        "impactType": "Crater Formation",
+        "description": "The largest verified impact crater on Earth. The asteroid is estimated to have been 10-15 km in diameter. The original crater was 300 km (190 mi) across.",
+        "coordinates": {
+            "lat": -27.0,
+            "lon": 27.5
+        }
+    }
+]
