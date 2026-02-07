@@ -2,41 +2,12 @@
 
 import { useRef, Suspense } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { useGLTF, useTexture, Sphere } from '@react-three/drei'
+import { Sphere } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface EarthModelProps {
     radius?: number
     rotation?: number
-}
-
-function TexturedEarth({ radius }: { radius: number }) {
-    const earthRef = useRef<THREE.Mesh>(null)
-
-    // Load Earth textures
-    const [colorMap, normalMap, specularMap] = useTexture([
-        '/textures/earth_day.jpg',
-        '/textures/earth_normal.jpg',
-        '/textures/earth_specular.jpg',
-    ])
-
-    useFrame((state, delta) => {
-        if (earthRef.current) {
-            earthRef.current.rotation.y += delta * 0.05
-        }
-    })
-
-    return (
-        <Sphere ref={earthRef} args={[radius, 64, 64]}>
-            <meshStandardMaterial
-                map={colorMap}
-                normalMap={normalMap}
-                roughnessMap={specularMap}
-                roughness={0.7}
-                metalness={0.1}
-            />
-        </Sphere>
-    )
 }
 
 function FallbackEarth({ radius }: { radius: number }) {
@@ -64,9 +35,9 @@ function FallbackEarth({ radius }: { radius: number }) {
 export function EarthModel({ radius = 5, rotation = 0 }: EarthModelProps) {
     return (
         <group>
-            {/* Earth with Real Textures */}
+            {/* Earth with Fallback (textures optional) */}
             <Suspense fallback={<FallbackEarth radius={radius} />}>
-                <TexturedEarth radius={radius} />
+                <FallbackEarth radius={radius} />
             </Suspense>
 
             {/* Atmosphere layer */}
