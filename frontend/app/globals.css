@@ -19,7 +19,7 @@
   }
 
   body {
-    @apply bg-cosmic-deep text-cosmic-lavender antialiased;
+    @apply bg-cosmic-deep text-white antialiased;
     font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 
@@ -85,6 +85,34 @@
 
   .animation-delay-600 {
     animation-delay: 600ms;
+  }
+
+  /* Icon Glow Effects */
+  .icon-glow {
+    filter: drop-shadow(0 0 6px currentColor);
+    transition: filter 0.3s ease, transform 0.3s ease;
+  }
+
+  .icon-glow:hover {
+    filter: drop-shadow(0 0 10px currentColor);
+    transform: scale(1.05);
+  }
+
+  .icon-glow-pulse {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+}
+
+/* Icon glow pulse animation */
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 6px currentColor);
+  }
+
+  50% {
+    filter: drop-shadow(0 0 12px currentColor);
   }
 }
 

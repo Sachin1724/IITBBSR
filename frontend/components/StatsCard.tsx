@@ -20,7 +20,7 @@ export default function StatsCard({ title, value, icon, color, delay = 0 }: Stat
         >
             <div className="flex items-start justify-between">
                 <div>
-                    <p className="text-cosmic-lavender/70 text-sm mb-2">{title}</p>
+                    <p className="text-white/70 text-sm mb-2">{title}</p>
                     <motion.p
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -40,3 +40,4 @@ export default function StatsCard({ title, value, icon, color, delay = 0 }: Stat
         </motion.div>
     )
 }
+

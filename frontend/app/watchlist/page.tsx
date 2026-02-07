@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Bookmark, Trash2 } from 'lucide-react'
+import { IoBookmark, IoTrash } from 'react-icons/io5'
 import { watchlistAPI, asteroidAPI, type Asteroid } from '@/lib/api'
 import AsteroidCard from '@/components/AsteroidCard'
 
@@ -30,51 +30,54 @@ export default function WatchlistPage() {
     }
 
     return (
-        <div className="container mx-auto px-6 py-8">
-            {/* Header */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-8"
-            >
-                <div className="flex items-center space-x-3 mb-4">
-                    <Bookmark className="w-8 h-8 text-cosmic-lavender" />
-                    <h1 className="text-4xl font-bold text-gradient font-[family-name:var(--font-space-grotesk)]">
-                        Your Watchlist
-                    </h1>
-                </div>
-                <p className="text-cosmic-lavender/70">
-                    Track your favorite asteroids and receive alerts for close approaches
-                </p>
-            </motion.div>
-
-            {/* Content */}
-            {loading ? (
-                <div className="flex items-center justify-center h-64">
-                    <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-cosmic-lavender"></div>
-                </div>
-            ) : asteroids.length === 0 ? (
+        <div className="min-h-screen bg-cosmic-deep pt-20 px-6">
+            <div className="container mx-auto max-w-7xl">
+                {/* Header */}
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="glass-card p-12 text-center"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-8"
                 >
-                    <Bookmark className="w-16 h-16 text-cosmic-lavender/30 mx-auto mb-4" />
-                    <h3 className="text-xl font-bold text-white mb-2">Your watchlist is empty</h3>
-                    <p className="text-cosmic-lavender/70 mb-6">
-                        Start adding asteroids to track their movements and receive alerts
+                    <div className="flex items-center space-x-3 mb-4">
+                        <IoBookmark className="w-8 h-8 text-white icon-glow" />
+                        <h1 className="text-4xl font-bold text-white font-[family-name:var(--font-space-grotesk)]">
+                            Your Watchlist
+                        </h1>
+                    </div>
+                    <p className="text-white/70">
+                        Track your favorite asteroids and receive alerts for close approaches
                     </p>
-                    <a href="/" className="btn-primary inline-block">
-                        Browse Asteroids
-                    </a>
                 </motion.div>
-            ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {asteroids.map((asteroid, index) => (
-                        <AsteroidCard key={asteroid.id} asteroid={asteroid} delay={index * 0.05} />
-                    ))}
-                </div>
-            )}
+
+                {/* Content */}
+                {loading ? (
+                    <div className="flex items-center justify-center h-64">
+                        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-cosmic-lavender"></div>
+                    </div>
+                ) : asteroids.length === 0 ? (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="glass-card p-12 text-center"
+                    >
+                        <IoBookmark className="w-16 h-16 text-white/30 mx-auto mb-4 icon-glow" />
+                        <h3 className="text-xl font-bold text-white mb-2">Your watchlist is empty</h3>
+                        <p className="text-white/70 mb-6">
+                            Start adding asteroids to track their movements and receive alerts
+                        </p>
+                        <a href="/" className="btn-primary inline-block">
+                            Browse Asteroids
+                        </a>
+                    </motion.div>
+                ) : (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                        {asteroids.map((asteroid, index) => (
+                            <AsteroidCard key={asteroid.id} asteroid={asteroid} delay={index * 0.05} />
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
     )
 }
+

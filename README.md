@@ -97,6 +97,10 @@ npm install
 npm run dev
 \`\`\`
 
+## 🚀 Deployment
+
+For detailed instructions on how to deploy this application to production (Netlify + Render) or run it with Docker, please see our [Deployment Guide](deployment_guide.md).
+
 ## 🎨 Color Palette
 
 The cosmic theme uses a carefully curated palette:

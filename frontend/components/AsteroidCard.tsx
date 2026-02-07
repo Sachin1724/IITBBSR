@@ -2,12 +2,11 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { AlertTriangle, Maximize2, Zap, Calendar, ExternalLink, Bookmark } from 'lucide-react'
+import { IoWarning, IoExpand, IoFlash, IoOpen, IoBookmark, IoSend, IoPeople, IoPerson } from 'react-icons/io5'
 import { asteroidAPI, watchlistAPI, type Asteroid } from '@/lib/api'
 import { formatDistance, formatVelocity, formatDiameter, getRiskLevel } from '@/lib/utils'
 import { useState } from 'react'
 import { useChat } from '@/contexts/ChatContext'
-import { Send, Users, User } from 'lucide-react'
 
 interface AsteroidCardProps {
     asteroid: Asteroid
@@ -57,8 +56,12 @@ export default function AsteroidCard({ asteroid, delay = 0 }: AsteroidCardProps)
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            whileHover={{
+                scale: 1.02,
+                transition: { duration: 0.2 }
+            }}
             transition={{ delay }}
-            className="glass-card-hover p-6 relative overflow-hidden group cursor-pointer"
+            className="glass-card-hover p-6 relative overflow-hidden group cursor-pointer hover:border-orange-500/50 hover:shadow-lg hover:shadow-orange-500/20 transition-all duration-300"
         >
             <Link href={`/asteroid/${asteroid.id}`} className="absolute inset-0 z-0" aria-label="View details" />
 
@@ -68,7 +71,7 @@ export default function AsteroidCard({ asteroid, delay = 0 }: AsteroidCardProps)
                     {risk.level}
                 </div>
                 {asteroid.is_potentially_hazardous_asteroid && (
-                    <AlertTriangle className="w-5 h-5 text-red-400" />
+                    <IoWarning className="w-5 h-5 text-red-400 icon-glow" />
                 )}
             </div>
 
@@ -82,21 +85,21 @@ export default function AsteroidCard({ asteroid, delay = 0 }: AsteroidCardProps)
                 className="absolute top-4 left-4 p-2 rounded-full bg-cosmic-dark/60 hover:bg-cosmic-dark transition-colors z-10"
                 title={isBookmarked ? "Remove from Watchlist" : "Add to Watchlist"}
             >
-                <Bookmark
-                    className={`w-4 h-4 ${isBookmarked ? 'fill-cosmic-lavender text-cosmic-lavender' : 'text-cosmic-lavender/50'}`}
+                <IoBookmark
+                    className={`w-4 h-4 icon-glow ${isBookmarked ? 'fill-cosmic-lavender text-white' : 'text-white/50'}`}
                 />
             </button>
 
             {/* Name */}
             <div className="mt-8 mb-4 relative z-10 pointer-events-none">
                 <h3 className="text-xl font-bold text-white mb-1 line-clamp-1">{asteroid.name}</h3>
-                <p className="text-cosmic-lavender/60 text-sm">ID: {asteroid.id}</p>
+                <p className="text-white/60 text-sm">ID: {asteroid.id}</p>
             </div>
 
             {/* Risk Score */}
             <div className="mb-4 relative z-10 pointer-events-none">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-cosmic-lavender/70">Risk Score</span>
+                    <span className="text-sm text-white/70">Risk Score</span>
                     <span className={`text-lg font-bold ${risk.color}`}>{riskScore}/100</span>
                 </div>
                 <div className="w-full h-2 bg-cosmic-dark rounded-full overflow-hidden">
@@ -112,17 +115,17 @@ export default function AsteroidCard({ asteroid, delay = 0 }: AsteroidCardProps)
             {/* Details Grid */}
             <div className="space-y-3 mb-4 relative z-10 pointer-events-none">
                 <DetailRow
-                    icon={<Maximize2 className="w-4 h-4" />}
+                    icon={<IoExpand className="w-4 h-4 icon-glow" />}
                     label="Diameter"
                     value={diameter > 0 ? formatDiameter(diameter * 1000) : 'Unknown'}
                 />
                 <DetailRow
-                    icon={<Zap className="w-4 h-4" />}
+                    icon={<IoFlash className="w-4 h-4 icon-glow" />}
                     label="Velocity"
                     value={approach ? formatVelocity(parseFloat(approach.relative_velocity.kilometers_per_hour)) : 'N/A'}
                 />
                 <DetailRow
-                    icon={<AlertTriangle className="w-4 h-4" />}
+                    icon={<IoWarning className="w-4 h-4 icon-glow" />}
                     label="Miss Distance"
                     value={approach ? formatDistance(parseFloat(approach.miss_distance.kilometers)) : 'N/A'}
                 />
@@ -142,7 +145,7 @@ export default function AsteroidCard({ asteroid, delay = 0 }: AsteroidCardProps)
                     className="btn-secondary p-2"
                     title="Share Asteroid"
                 >
-                    <ExternalLink className="w-4 h-4" />
+                    <IoOpen className="w-4 h-4 icon-glow" />
                 </button>
                 <a
                     href={asteroid.nasa_jpl_url}
@@ -152,7 +155,7 @@ export default function AsteroidCard({ asteroid, delay = 0 }: AsteroidCardProps)
                     className="btn-secondary p-2"
                     title="NASA JPL Details"
                 >
-                    <Bookmark className="w-4 h-4 rotate-90" /> {/* Using rotate marker as JPL icon proxy */}
+                    <IoBookmark className="w-4 h-4 rotate-90 icon-glow" /> {/* Using rotate marker as JPL icon proxy */}
                 </a>
             </div>
 
@@ -171,7 +174,7 @@ export default function AsteroidCard({ asteroid, delay = 0 }: AsteroidCardProps)
                         className="glass-card p-6 max-w-sm w-full shadow-2xl border-white/20"
                     >
                         <h3 className="text-lg font-bold mb-4">Share Discovery</h3>
-                        <p className="text-sm text-cosmic-lavender/70 mb-6">
+                        <p className="text-sm text-white/70 mb-6">
                             Share this asteroid's data with other researchers.
                         </p>
 
@@ -184,7 +187,7 @@ export default function AsteroidCard({ asteroid, delay = 0 }: AsteroidCardProps)
                                 {shareCopied ? (
                                     <span className="text-xs text-green-400 font-medium">Copied!</span>
                                 ) : (
-                                    <ExternalLink className="w-4 h-4 text-cosmic-lavender/50" />
+                                    <IoOpen className="w-4 h-4 text-white/50 icon-glow" />
                                 )}
                             </button>
 
@@ -193,13 +196,13 @@ export default function AsteroidCard({ asteroid, delay = 0 }: AsteroidCardProps)
                                 className="w-full flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-colors border border-white/10"
                             >
                                 <span className="text-sm">Share to Research Group</span>
-                                <Zap className="w-4 h-4 text-cosmic-lavender/50" />
+                                <IoFlash className="w-4 h-4 text-white/50 icon-glow" />
                             </button>
                         </div>
 
                         <button
                             onClick={() => setShowShare(false)}
-                            className="mt-6 w-full py-2 text-sm text-cosmic-lavender/50 hover:text-white transition-colors"
+                            className="mt-6 w-full py-2 text-sm text-white/50 hover:text-white transition-colors"
                         >
                             Close
                         </button>
@@ -293,11 +296,11 @@ function ShareToChatModal({ asteroid, onClose, onSuccess }: { asteroid: Asteroid
             >
                 <div className="flex justify-between items-center">
                     <h3 className="text-lg font-bold">Share to...</h3>
-                    <button onClick={onClose} className="text-white/50 hover:text-white"><Zap className="w-4 h-4 rotate-45" /></button>
+                    <button onClick={onClose} className="text-white/50 hover:text-white"><IoFlash className="w-4 h-4 rotate-45 icon-glow" /></button>
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-xs text-cosmic-lavender/70 font-bold uppercase">Destination</label>
+                    <label className="text-xs text-white/70 font-bold uppercase">Destination</label>
                     <div className="grid grid-cols-1 gap-2 max-h-40 overflow-y-auto custom-scrollbar">
                         <button
                             onClick={() => setSelectedChat('community')}
@@ -306,7 +309,7 @@ function ShareToChatModal({ asteroid, onClose, onSuccess }: { asteroid: Asteroid
                                 : 'bg-white/5 border-transparent hover:bg-white/10 text-white/70'}`}
                         >
                             <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
-                                <Users className="w-4 h-4 text-indigo-400" />
+                                <IoPeople className="w-4 h-4 text-indigo-400 icon-glow" />
                             </div>
                             <span className="text-sm font-medium">Research Community</span>
                         </button>
@@ -329,7 +332,7 @@ function ShareToChatModal({ asteroid, onClose, onSuccess }: { asteroid: Asteroid
                                         : 'bg-white/5 border-transparent hover:bg-white/10 text-white/70'}`}
                                 >
                                     <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
-                                        <User className="w-4 h-4 text-purple-400" />
+                                        <IoPerson className="w-4 h-4 text-purple-400 icon-glow" />
                                     </div>
                                     <div className="text-left overflow-hidden">
                                         <div className="text-sm font-medium truncate">ID: {chat._id.slice(-4)}</div>
@@ -342,7 +345,7 @@ function ShareToChatModal({ asteroid, onClose, onSuccess }: { asteroid: Asteroid
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-xs text-cosmic-lavender/70 font-bold uppercase">Message</label>
+                    <label className="text-xs text-white/70 font-bold uppercase">Message</label>
                     <textarea
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
@@ -359,7 +362,7 @@ function ShareToChatModal({ asteroid, onClose, onSuccess }: { asteroid: Asteroid
                         <span className="animate-pulse">Sending...</span>
                     ) : (
                         <>
-                            <Send className="w-4 h-4" />
+                            <IoSend className="w-4 h-4 icon-glow" />
                             Share Now
                         </>
                     )}
@@ -372,7 +375,7 @@ function ShareToChatModal({ asteroid, onClose, onSuccess }: { asteroid: Asteroid
 function DetailRow({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
     return (
         <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center space-x-2 text-cosmic-lavender/70">
+            <div className="flex items-center space-x-2 text-white/70">
                 {icon}
                 <span>{label}</span>
             </div>
@@ -380,3 +383,4 @@ function DetailRow({ icon, label, value }: { icon: React.ReactNode; label: strin
         </div>
     )
 }
+

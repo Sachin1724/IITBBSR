@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { User, MapPin, Building, Calendar, Edit2, LogOut, Lock } from 'lucide-react'
+import { IoPerson, IoLocation, IoBusiness, IoCalendar, IoPencil, IoLogOut, IoLockClosed } from 'react-icons/io5'
 import { useRouter } from 'next/navigation'
 import { ProfileEditModal } from '@/components/profile/ProfileEditModal'
 import { ChangePasswordModal } from '@/components/profile/ChangePasswordModal'
@@ -79,7 +79,7 @@ export default function ProfilePage() {
     if (!user) return null
 
     return (
-        <div className="container mx-auto px-6 py-12">
+        <div className="w-full px-0 py-12">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -104,7 +104,7 @@ export default function ProfilePage() {
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
-                                        <User className="w-16 h-16 text-[#9290C3]" />
+                                        <IoPerson className="w-16 h-16 text-[#9290C3] icon-glow" />
                                     )}
                                 </div>
                                 <div className="absolute bottom-2 right-2 w-4 h-4 bg-green-500 rounded-full border-2 border-[#1B1A55]" />
@@ -115,21 +115,21 @@ export default function ProfilePage() {
                                     onClick={() => setIsEditModalOpen(true)}
                                     className="btn-secondary flex items-center gap-2"
                                 >
-                                    <Edit2 className="w-4 h-4" />
+                                    <IoPencil className="w-4 h-4 icon-glow" />
                                     Edit Profile
                                 </button>
                                 <button
                                     onClick={() => setIsPasswordModalOpen(true)}
                                     className="btn-secondary flex items-center gap-2"
                                 >
-                                    <Lock className="w-4 h-4" />
+                                    <IoLockClosed className="w-4 h-4 icon-glow" />
                                     Change Password
                                 </button>
                                 <button
                                     onClick={handleLogout}
                                     className="px-4 py-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors flex items-center gap-2"
                                 >
-                                    <LogOut className="w-4 h-4" />
+                                    <IoLogOut className="w-4 h-4 icon-glow" />
                                     Logout
                                 </button>
                             </div>
@@ -144,15 +144,15 @@ export default function ProfilePage() {
 
                             <div className="flex flex-wrap gap-6 text-[#9290C3]/80">
                                 <div className="flex items-center gap-2">
-                                    <MapPin className="w-4 h-4" />
+                                    <IoLocation className="w-4 h-4 icon-glow" />
                                     <span>{user.location || 'Location not set'}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Building className="w-4 h-4" />
+                                    <IoBusiness className="w-4 h-4 icon-glow" />
                                     <span>{user.organization || 'No organization'}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Calendar className="w-4 h-4" />
+                                    <IoCalendar className="w-4 h-4 icon-glow" />
                                     <span>Joined {new Date(user.createdAt).toLocaleDateString()}</span>
                                 </div>
                             </div>
@@ -207,3 +207,5 @@ export default function ProfilePage() {
         </div>
     )
 }
+
+

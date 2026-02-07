@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Calendar, MapPin, Zap } from 'lucide-react'
+import { IoCalendar, IoLocation, IoFlash } from 'react-icons/io5'
 
 interface HistoricalImpact {
     _id: string
@@ -36,22 +36,22 @@ export function ImpactTimeline({ impacts }: ImpactTimelineProps) {
                     <div className="bg-[#1B1A55]/40 backdrop-blur-sm border border-[#535C91]/30 rounded-xl p-6 hover:bg-[#1B1A55]/60 transition-colors group">
                         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
                             <div>
-                                <h3 className="text-2xl font-bold text-white group-hover:text-cosmic-lavender transition-colors font-[family-name:var(--font-space-grotesk)]">
+                                <h3 className="text-2xl font-bold text-white group-hover:text-white transition-colors font-[family-name:var(--font-space-grotesk)]">
                                     {impact.name}
                                 </h3>
                                 <div className="flex flex-wrap gap-4 mt-2 text-sm text-[#9290C3]">
                                     <div className="flex items-center gap-1.5">
-                                        <Calendar className="w-4 h-4" />
+                                        <IoCalendar className="w-4 h-4 icon-glow" />
                                         <span>{new Date(impact.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                                     </div>
                                     <div className="flex items-center gap-1.5">
-                                        <MapPin className="w-4 h-4" />
+                                        <IoLocation className="w-4 h-4 icon-glow" />
                                         <span>{impact.location}</span>
                                     </div>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2 bg-red-500/10 text-red-300 px-3 py-1 rounded-full text-sm font-medium border border-red-500/20 self-start">
-                                <Zap className="w-4 h-4" />
+                                <IoFlash className="w-4 h-4 icon-glow" />
                                 {impact.energy}
                             </div>
                         </div>
@@ -69,3 +69,4 @@ export function ImpactTimeline({ impacts }: ImpactTimelineProps) {
         </div>
     )
 }
+

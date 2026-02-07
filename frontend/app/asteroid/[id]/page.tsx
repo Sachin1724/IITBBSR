@@ -183,8 +183,8 @@ export default function AsteroidDetailPage() {
                         <button
                             onClick={handleToggleWatchlist}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${isWatched
-                                    ? 'bg-cosmic-nebula text-white shadow-lg shadow-cosmic-nebula/20'
-                                    : 'btn-secondary'
+                                ? 'bg-cosmic-nebula text-white shadow-lg shadow-cosmic-nebula/20'
+                                : 'btn-secondary'
                                 }`}
                         >
                             <Bookmark className={`w-4 h-4 ${isWatched ? 'fill-white' : ''}`} />

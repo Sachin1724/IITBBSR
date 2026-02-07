@@ -4,16 +4,16 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
-    Users,
-    Shield,
-    Activity,
-    Search,
-    RefreshCw,
-    MoreVertical,
-    Key,
-    ShieldAlert,
-    UserCircle
-} from 'lucide-react'
+    IoPeople,
+    IoShieldCheckmark,
+    IoPulse,
+    IoSearch,
+    IoRefresh,
+    IoEllipsisVertical,
+    IoKey,
+    IoShieldHalf,
+    IoPersonCircle
+} from 'react-icons/io5'
 import { adminAPI } from '@/lib/api'
 
 interface UserData {
@@ -117,7 +117,7 @@ export default function AdminPage() {
                 <h1 className="text-4xl font-bold text-gradient mb-2 font-[family-name:var(--font-space-grotesk)]">
                     Admin Dashboard
                 </h1>
-                <p className="text-cosmic-lavender/70">System oversight and user management</p>
+                <p className="text-white/70">System oversight and user management</p>
             </header>
 
             {/* Stats Grid */}
@@ -125,19 +125,19 @@ export default function AdminPage() {
                 <StatsCard
                     label="Total Users"
                     value={stats?.totalUsers || 0}
-                    icon={<Users className="w-6 h-6" />}
+                    icon={<IoPeople className="w-6 h-6 icon-glow" />}
                     color="text-blue-400"
                 />
                 <StatsCard
                     label="Active (24h)"
                     value={stats?.activeUsersLast24h || 0}
-                    icon={<Activity className="w-6 h-6" />}
+                    icon={<IoPulse className="w-6 h-6 icon-glow" />}
                     color="text-green-400"
                 />
                 <StatsCard
                     label="Administrators"
                     value={stats?.adminCount || 0}
-                    icon={<Shield className="w-6 h-6" />}
+                    icon={<IoShieldCheckmark className="w-6 h-6 icon-glow" />}
                     color="text-purple-400"
                 />
             </div>
@@ -146,7 +146,7 @@ export default function AdminPage() {
             <div className="glass-card overflow-hidden">
                 <div className="p-6 border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <h2 className="text-xl font-bold flex items-center gap-2">
-                        <UserCircle className="w-5 h-5 text-cosmic-lavender" />
+                        <IoPersonCircle className="w-5 h-5 text-white icon-glow" />
                         User Management
                     </h2>
 
@@ -159,7 +159,7 @@ export default function AdminPage() {
                             className="input-cosmic pr-10"
                         />
                         <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2">
-                            <Search className="w-4 h-4 text-cosmic-lavender/50 hover:text-white" />
+                            <IoSearch className="w-4 h-4 text-white/50 hover:text-white icon-glow" />
                         </button>
                     </form>
                 </div>
@@ -167,7 +167,7 @@ export default function AdminPage() {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
-                            <tr className="bg-white/5 text-cosmic-lavender/70 text-sm uppercase tracking-wider">
+                            <tr className="bg-white/5 text-white/70 text-sm uppercase tracking-wider">
                                 <th className="px-6 py-4 font-medium">User</th>
                                 <th className="px-6 py-4 font-medium">Role</th>
                                 <th className="px-6 py-4 font-medium">Joined</th>
@@ -180,28 +180,28 @@ export default function AdminPage() {
                                 <tr key={user._id} className="hover:bg-white/5 transition-colors">
                                     <td className="px-6 py-4">
                                         <div className="font-medium">{user.name}</div>
-                                        <div className="text-xs text-cosmic-lavender/50">{user.email}</div>
+                                        <div className="text-xs text-white/50">{user.email}</div>
                                     </td>
                                     <td className="px-6 py-4">
                                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${user.role === 'admin'
-                                                ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
-                                                : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                                            ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                                            : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
                                             }`}>
                                             {user.role}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-cosmic-lavender/70">
+                                    <td className="px-6 py-4 text-sm text-white/70">
                                         {new Date(user.createdAt).toLocaleDateString()}
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-cosmic-lavender/70">
+                                    <td className="px-6 py-4 text-sm text-white/70">
                                         {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never'}
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <button
                                             onClick={() => setSelectedUser(user)}
-                                            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-cosmic-lavender"
+                                            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white"
                                         >
-                                            <MoreVertical className="w-5 h-5" />
+                                            <IoEllipsisVertical className="w-5 h-5 icon-glow" />
                                         </button>
                                     </td>
                                 </tr>
@@ -221,17 +221,17 @@ export default function AdminPage() {
                     >
                         <div className="flex items-center gap-3 mb-6">
                             <div className="p-3 bg-red-500/10 rounded-xl">
-                                <ShieldAlert className="w-6 h-6 text-red-500" />
+                                <IoShieldHalf className="w-6 h-6 text-red-500 icon-glow" />
                             </div>
                             <div>
                                 <h3 className="text-xl font-bold">Manage User</h3>
-                                <p className="text-sm text-cosmic-lavender/60">{selectedUser.name}</p>
+                                <p className="text-sm text-white/60">{selectedUser.name}</p>
                             </div>
                         </div>
 
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium mb-1 text-cosmic-lavender/70">
+                                <label className="block text-sm font-medium mb-1 text-white/70">
                                     Direct Password Reset
                                 </label>
                                 <div className="relative">
@@ -242,9 +242,9 @@ export default function AdminPage() {
                                         placeholder="Enter new password"
                                         className="input-cosmic pr-10"
                                     />
-                                    <Key className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-cosmic-lavender/30" />
+                                    <IoKey className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 icon-glow" />
                                 </div>
-                                <p className="text-[10px] text-cosmic-lavender/50 mt-1">
+                                <p className="text-[10px] text-white/50 mt-1">
                                     Warning: This will change the user's password immediately.
                                 </p>
                             </div>
@@ -282,7 +282,7 @@ function StatsCard({ label, value, icon, color }: { label: string, value: number
             className="glass-card p-6 flex items-center justify-between"
         >
             <div>
-                <p className="text-cosmic-lavender/60 text-sm font-medium uppercase tracking-wider mb-1">{label}</p>
+                <p className="text-white/60 text-sm font-medium uppercase tracking-wider mb-1">{label}</p>
                 <p className="text-3xl font-bold">{value.toLocaleString()}</p>
             </div>
             <div className={`p-4 bg-white/5 rounded-2xl ${color}`}>
@@ -291,3 +291,5 @@ function StatsCard({ label, value, icon, color }: { label: string, value: number
         </motion.div>
     )
 }
+
+

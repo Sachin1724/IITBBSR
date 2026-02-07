@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Bell, BellOff, Settings, Clock, AlertCircle, CheckCircle } from 'lucide-react'
+import { IoNotifications, IoNotificationsOff, IoSettings, IoTime, IoAlertCircle, IoCheckmarkCircle } from 'react-icons/io5'
 
 interface Alert {
     id: string
@@ -76,18 +76,18 @@ export default function AlertsPage() {
     const getSeverityIcon = (severity: string) => {
         switch (severity) {
             case 'high':
-                return <AlertCircle className="w-5 h-5 text-red-500" />
+                return <IoAlertCircle className="w-5 h-5 text-red-500 icon-glow" />
             case 'medium':
-                return <AlertCircle className="w-5 h-5 text-yellow-500" />
+                return <IoAlertCircle className="w-5 h-5 text-yellow-500 icon-glow" />
             default:
-                return <AlertCircle className="w-5 h-5 text-blue-500" />
+                return <IoAlertCircle className="w-5 h-5 text-blue-500 icon-glow" />
         }
     }
 
     const unreadCount = alerts.filter((a) => !a.read).length
 
     return (
-        <div className="container mx-auto px-6 py-8">
+        <div className="w-full px-0 py-8">
             {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -99,7 +99,7 @@ export default function AlertsPage() {
                         <h1 className="text-5xl font-bold text-gradient mb-4 font-[family-name:var(--font-space-grotesk)]">
                             Alerts & Notifications
                         </h1>
-                        <p className="text-cosmic-lavender/70 text-lg">
+                        <p className="text-white/70 text-lg">
                             Stay informed about asteroid close approaches and updates
                         </p>
                     </div>
@@ -107,7 +107,7 @@ export default function AlertsPage() {
                         onClick={() => setShowSettings(!showSettings)}
                         className="btn-cosmic flex items-center gap-2"
                     >
-                        <Settings className="w-5 h-5" />
+                        <IoSettings className="w-5 h-5 icon-glow" />
                         Settings
                     </button>
                 </div>
@@ -186,7 +186,7 @@ export default function AlertsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="bg-[#1B1A55]/50 backdrop-blur-md border border-[#535C91]/30 rounded-xl p-6">
                     <div className="flex items-center gap-3">
-                        <Bell className="w-8 h-8 text-[#9290C3]" />
+                        <IoNotifications className="w-8 h-8 text-[#9290C3] icon-glow" />
                         <div>
                             <div className="text-2xl font-bold text-white">{alerts.length}</div>
                             <div className="text-sm text-[#9290C3]/60">Total Alerts</div>
@@ -196,7 +196,7 @@ export default function AlertsPage() {
 
                 <div className="bg-[#1B1A55]/50 backdrop-blur-md border border-[#535C91]/30 rounded-xl p-6">
                     <div className="flex items-center gap-3">
-                        <AlertCircle className="w-8 h-8 text-yellow-500" />
+                        <IoAlertCircle className="w-8 h-8 text-yellow-500 icon-glow" />
                         <div>
                             <div className="text-2xl font-bold text-white">{unreadCount}</div>
                             <div className="text-sm text-[#9290C3]/60">Unread</div>
@@ -207,9 +207,9 @@ export default function AlertsPage() {
                 <div className="bg-[#1B1A55]/50 backdrop-blur-md border border-[#535C91]/30 rounded-xl p-6">
                     <div className="flex items-center gap-3">
                         {notificationsEnabled ? (
-                            <Bell className="w-8 h-8 text-green-500" />
+                            <IoNotifications className="w-8 h-8 text-green-500 icon-glow" />
                         ) : (
-                            <BellOff className="w-8 h-8 text-red-500" />
+                            <IoNotificationsOff className="w-8 h-8 text-red-500 icon-glow" />
                         )}
                         <div>
                             <div className="text-2xl font-bold text-white">
@@ -228,7 +228,7 @@ export default function AlertsPage() {
                         onClick={markAllAsRead}
                         className="text-[#9290C3] hover:text-white flex items-center gap-2 transition-colors"
                     >
-                        <CheckCircle className="w-4 h-4" />
+                        <IoCheckmarkCircle className="w-4 h-4 icon-glow" />
                         Mark all as read
                     </button>
                 </div>
@@ -238,7 +238,7 @@ export default function AlertsPage() {
             <div className="space-y-4">
                 {alerts.length === 0 ? (
                     <div className="text-center py-16 bg-[#1B1A55]/30 rounded-xl">
-                        <Bell className="w-16 h-16 mx-auto mb-4 text-[#9290C3]/30" />
+                        <IoNotifications className="w-16 h-16 mx-auto mb-4 text-[#9290C3]/30 icon-glow" />
                         <p className="text-[#9290C3]/60 text-lg">No alerts yet</p>
                         <p className="text-[#9290C3]/40 text-sm mt-2">
                             You'll be notified when asteroids approach Earth
@@ -264,7 +264,7 @@ export default function AlertsPage() {
                                                 {alert.asteroidName}
                                             </h3>
                                             <div className="flex items-center gap-2 text-sm text-[#9290C3]/60 mt-1">
-                                                <Clock className="w-4 h-4" />
+                                                <IoTime className="w-4 h-4 icon-glow" />
                                                 {alert.timestamp.toLocaleString()}
                                             </div>
                                         </div>
@@ -287,3 +287,5 @@ export default function AlertsPage() {
         </div>
     )
 }
+
+

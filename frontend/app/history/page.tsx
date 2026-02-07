@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { History, Clock } from 'lucide-react'
+import { IoTime, IoCalendar } from 'react-icons/io5'
 import { historyAPI } from '@/lib/api'
 import { ImpactTimeline } from '@/components/history/ImpactTimeline'
 
@@ -36,7 +36,7 @@ export default function HistoryPage() {
     }
 
     return (
-        <div className="container mx-auto px-6 py-12">
+        <div className="w-full px-0 py-12">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -53,10 +53,10 @@ export default function HistoryPage() {
 
                 <div className="bg-[#070F2B]/50 rounded-2xl p-8 border border-[#535C91]/20">
                     <div className="flex items-center gap-4 mb-8 pb-4 border-b border-[#535C91]/30">
-                        <History className="w-8 h-8 text-cosmic-lavender" />
+                        <IoTime className="w-8 h-8 text-white icon-glow" />
                         <h2 className="text-2xl font-semibold text-white">Impact Timeline</h2>
                         <div className="ml-auto flex items-center gap-2 text-sm text-[#9290C3]">
-                            <Clock className="w-4 h-4" />
+                            <IoCalendar className="w-4 h-4 icon-glow" />
                             <span>Sorted by Date (Recent First)</span>
                         </div>
                     </div>
@@ -73,3 +73,5 @@ export default function HistoryPage() {
         </div>
     )
 }
+
+

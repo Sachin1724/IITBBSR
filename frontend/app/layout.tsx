@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Plus_Jakarta_Sans, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import Navigation from '@/components/Navigation'
-import Starfield from '@/components/Starfield'
 import { ChatProvider } from '@/contexts/ChatContext'
 import { ChatPanel } from '@/components/chat/ChatPanel'
 
@@ -24,7 +23,6 @@ export default function RootLayout({
         <html lang="en" className="dark">
             <body className={`${plusJakartaScans.variable} ${spaceGrotesk.variable} font-sans`}>
                 <ChatProvider>
-                    <Starfield />
                     <Navigation />
                     <main className="min-h-screen">
                         {children}

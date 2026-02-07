@@ -234,3 +234,4 @@ export function OrbitalView({ asteroids }: OrbitalViewProps) {
         </div>
     )
 }
+

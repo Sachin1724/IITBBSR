@@ -409,13 +409,13 @@ const Hero: React.FC<HeroProps> = ({
                             {trustBadge.icons && (
                                 <div className="flex">
                                     {trustBadge.icons.map((icon, index) => (
-                                        <span key={index} className="text-cosmic-lavender mr-1">
+                                        <span key={index} className="text-white mr-1">
                                             {icon}
                                         </span>
                                     ))}
                                 </div>
                             )}
-                            <span className="text-cosmic-lavender/90">{trustBadge.text}</span>
+                            <span className="text-white/90">{trustBadge.text}</span>
                         </div>
                     </div>
                 )}
@@ -423,17 +423,17 @@ const Hero: React.FC<HeroProps> = ({
                 <div className="text-center space-y-6 max-w-5xl mx-auto px-4">
                     {/* Main Heading with Animation */}
                     <div className="space-y-2">
-                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-cosmic-lavender via-purple-300 to-indigo-300 bg-clip-text text-transparent animate-fade-in-up animation-delay-200 font-doto">
+                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white animate-fade-in-up animation-delay-200 font-doto">
                             {headline.line1}
                         </h1>
-                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-indigo-300 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-fade-in-up animation-delay-400 font-doto">
+                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white animate-fade-in-up animation-delay-400 font-doto">
                             {headline.line2}
                         </h1>
                     </div>
 
                     {/* Subtitle with Animation */}
                     <div className="max-w-3xl mx-auto animate-fade-in-up animation-delay-600">
-                        <p className="text-lg md:text-xl lg:text-2xl text-cosmic-lavender/80 font-light leading-relaxed">
+                        <p className="text-lg md:text-xl lg:text-2xl text-white/90 font-light leading-relaxed">
                             {subtitle}
                         </p>
                     </div>
@@ -451,7 +451,7 @@ const Hero: React.FC<HeroProps> = ({
                             {buttons.secondary && (
                                 <button
                                     onClick={buttons.secondary.onClick}
-                                    className="px-8 py-4 bg-cosmic-dark/40 hover:bg-cosmic-dark/60 border border-cosmic-lavender/30 hover:border-cosmic-lavender/50 text-cosmic-lavender rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 backdrop-blur-sm font-doto"
+                                    className="px-8 py-4 bg-cosmic-dark/40 hover:bg-cosmic-dark/60 border border-cosmic-lavender/30 hover:border-cosmic-lavender/50 text-white rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 backdrop-blur-sm font-doto"
                                 >
                                     {buttons.secondary.text}
                                 </button>
@@ -542,3 +542,4 @@ void main(void) {
 }`;
 
 export default Hero;
+

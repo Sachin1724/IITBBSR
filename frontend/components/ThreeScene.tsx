@@ -117,9 +117,12 @@ function Trail({ asteroidRef }: { asteroidRef: React.RefObject<THREE.Mesh> }) {
     })
 
     return (
-        <line ref={trailRef}>
-            <bufferGeometry />
-            <lineBasicMaterial color="#9290C3" transparent opacity={0.3} />
-        </line>
+        <>
+            {/* @ts-ignore */}
+            <line ref={trailRef}>
+                <bufferGeometry />
+                <lineBasicMaterial color="#9290C3" transparent opacity={0.3} />
+            </line>
+        </>
     )
 }

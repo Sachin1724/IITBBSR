@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Lock, Save, Eye, EyeOff } from 'lucide-react'
+import { IoClose, IoLockClosed, IoEye, IoEyeOff } from 'react-icons/io5'
 import api from '@/lib/api'
 
 interface ChangePasswordModalProps {
@@ -75,14 +75,14 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
                     >
                         <div className="flex items-center justify-between p-6 border-b border-[#535C91]/30 bg-[#070F2B]/50">
                             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                                <Lock className="w-5 h-5 text-cosmic-lavender" />
+                                <IoLockClosed className="w-5 h-5 text-white icon-glow" />
                                 Change Password
                             </h2>
                             <button
                                 onClick={onClose}
                                 className="p-2 text-[#9290C3] hover:text-white hover:bg-[#535C91]/30 rounded-lg transition-colors"
                             >
-                                <X className="w-5 h-5" />
+                                <IoClose className="w-5 h-5 icon-glow" />
                             </button>
                         </div>
 
@@ -114,7 +114,7 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
                                         onClick={() => toggleShow('old')}
                                         className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9290C3]/60 hover:text-white"
                                     >
-                                        {showPassword.old ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                        {showPassword.old ? <IoEyeOff className="w-4 h-4 icon-glow" /> : <IoEye className="w-4 h-4 icon-glow" />}
                                     </button>
                                 </div>
                             </div>
@@ -136,7 +136,7 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
                                         onClick={() => toggleShow('new')}
                                         className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9290C3]/60 hover:text-white"
                                     >
-                                        {showPassword.new ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                        {showPassword.new ? <IoEyeOff className="w-4 h-4 icon-glow" /> : <IoEye className="w-4 h-4 icon-glow" />}
                                     </button>
                                 </div>
                             </div>
@@ -158,7 +158,7 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
                                         onClick={() => toggleShow('confirm')}
                                         className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9290C3]/60 hover:text-white"
                                     >
-                                        {showPassword.confirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                        {showPassword.confirm ? <IoEyeOff className="w-4 h-4 icon-glow" /> : <IoEye className="w-4 h-4 icon-glow" />}
                                     </button>
                                 </div>
                             </div>
@@ -186,3 +186,4 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
         </AnimatePresence>
     )
 }
+

@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useChat } from '@/contexts/ChatContext'
 import { ChatMessage } from './ChatMessage'
-import { MessageCircle, X, Send, Users } from 'lucide-react'
+import { IoChatbubbles, IoClose, IoSend, IoPeople, IoPerson } from 'react-icons/io5'
 
 export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
     const [isOpen, setIsOpen] = useState(isFullPage)
@@ -104,7 +104,7 @@ export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
                     onClick={() => setIsOpen(true)}
                     className="fixed bottom-6 right-6 bg-gradient-to-r from-[#535C91] to-[#9290C3] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 flex items-center gap-2"
                 >
-                    <MessageCircle className="w-6 h-6" />
+                    <IoChatbubbles className="w-6 h-6 icon-glow" />
                 </button>
             )}
 
@@ -114,7 +114,7 @@ export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
                     <div className="bg-gradient-to-r from-[#1B1A55] to-[#535C91] p-4 flex flex-col gap-3">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <MessageCircle className="w-5 h-5 text-[#9290C3]" />
+                                <IoChatbubbles className="w-5 h-5 text-[#9290C3] icon-glow" />
                                 <h3 className="text-white font-semibold">
                                     {activeTab === 'community' ? 'Community' : (activeChat ? 'Direct Message' : 'Personal')}
                                 </h3>
@@ -122,14 +122,14 @@ export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
                             <div className="flex items-center gap-3">
                                 {activeTab === 'community' && (
                                     <div className="flex items-center gap-1 text-sm text-[#9290C3]">
-                                        <Users className="w-4 h-4" />
+                                        <IoPeople className="w-4 h-4 icon-glow" />
                                         <span>{onlineUsers}</span>
                                     </div>
                                 )}
                                 <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-400'}`} />
                                 {!isFullPage && (
                                     <button onClick={() => setIsOpen(false)} className="text-[#9290C3] hover:text-white transition-colors">
-                                        <X className="w-5 h-5" />
+                                        <IoClose className="w-5 h-5 icon-glow" />
                                     </button>
                                 )}
                             </div>
@@ -179,7 +179,7 @@ export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
                                     <div className="flex-1 flex flex-col">
                                         <div className="p-2 border-b border-white/5 bg-white/5 flex items-center gap-2">
                                             <button onClick={() => setActiveChat(null)} className="p-1 hover:bg-white/10 rounded transition-colors text-white/50 hover:text-white">
-                                                <Users className="w-4 h-4 rotate-180" />
+                                                <IoPeople className="w-4 h-4 rotate-180 icon-glow" />
                                             </button>
                                             <span className="text-sm font-medium">
                                                 {activeChat.participants.find(p => p._id !== currentUser.id)?.name || 'Research Partner'}
@@ -207,7 +207,7 @@ export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
                                                 onClick={() => setShowSearch(!showSearch)}
                                                 className="p-1.5 bg-[#535C91] hover:bg-[#9290C3] rounded-lg text-white transition-all transform hover:scale-110"
                                             >
-                                                <Users className="w-4 h-4" />
+                                                <IoPeople className="w-4 h-4 icon-glow" />
                                             </button>
                                         </div>
 
@@ -247,7 +247,7 @@ export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
                                         <div className="space-y-2">
                                             {conversations.length === 0 ? (
                                                 <div className="text-center py-8 opacity-40">
-                                                    <Users className="w-12 h-12 mx-auto mb-2" />
+                                                    <IoPeople className="w-12 h-12 mx-auto mb-2 icon-glow" />
                                                     <p className="text-xs">No private chats yet.</p>
                                                 </div>
                                             ) : (
@@ -263,7 +263,9 @@ export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
                                                                 {otherUser?.avatar ? (
                                                                     <img src={otherUser.avatar} className="w-full h-full rounded-full" />
                                                                 ) : (
-                                                                    <span className="font-bold">{otherUser?.name.charAt(0)}</span>
+                                                                    <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                                                                        <IoPerson className="w-4 h-4 text-purple-400 icon-glow" />
+                                                                    </div>
                                                                 )}
                                                             </div>
                                                             <div className="flex-1 min-w-0">
@@ -303,7 +305,7 @@ export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
                                     disabled={!isConnected || !inputMessage.trim()}
                                     className="bg-[#535C91] hover:bg-[#9290C3] p-2 rounded-lg text-white transition-all disabled:opacity-30"
                                 >
-                                    <Send className="w-4 h-4" />
+                                    <IoSend className="w-4 h-4 icon-glow" />
                                 </button>
                             </div>
                         </div>
@@ -313,4 +315,5 @@ export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
         </>
     )
 }
+
 

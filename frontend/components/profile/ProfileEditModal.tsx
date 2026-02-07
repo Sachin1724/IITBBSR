@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Save, User, MapPin, Building, FileText, Camera } from 'lucide-react'
+import { IoClose, IoSave, IoPerson, IoLocation, IoBusiness, IoDocumentText, IoCamera } from 'react-icons/io5'
 
 interface UserProfile {
     name: string
@@ -59,7 +59,7 @@ export function ProfileEditModal({ isOpen, onClose, onSave, currentUser }: Profi
                                 onClick={onClose}
                                 className="p-2 text-[#9290C3] hover:text-white hover:bg-[#535C91]/30 rounded-lg transition-colors"
                             >
-                                <X className="w-5 h-5" />
+                                <IoClose className="w-5 h-5 icon-glow" />
                             </button>
                         </div>
 
@@ -70,7 +70,7 @@ export function ProfileEditModal({ isOpen, onClose, onSave, currentUser }: Profi
                                     Avatar URL
                                 </label>
                                 <div className="relative">
-                                    <Camera className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9290C3]/60" />
+                                    <IoCamera className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9290C3]/60 icon-glow" />
                                     <input
                                         type="url"
                                         value={formData.avatar}
@@ -87,7 +87,7 @@ export function ProfileEditModal({ isOpen, onClose, onSave, currentUser }: Profi
                                     Display Name
                                 </label>
                                 <div className="relative">
-                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9290C3]/60" />
+                                    <IoPerson className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9290C3]/60 icon-glow" />
                                     <input
                                         type="text"
                                         value={formData.name}
@@ -104,7 +104,7 @@ export function ProfileEditModal({ isOpen, onClose, onSave, currentUser }: Profi
                                     Bio
                                 </label>
                                 <div className="relative">
-                                    <FileText className="absolute left-3 top-3 w-4 h-4 text-[#9290C3]/60" />
+                                    <IoDocumentText className="absolute left-3 top-3 w-4 h-4 text-[#9290C3]/60 icon-glow" />
                                     <textarea
                                         value={formData.bio}
                                         onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
@@ -124,7 +124,7 @@ export function ProfileEditModal({ isOpen, onClose, onSave, currentUser }: Profi
                                     Location
                                 </label>
                                 <div className="relative">
-                                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9290C3]/60" />
+                                    <IoLocation className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9290C3]/60 icon-glow" />
                                     <input
                                         type="text"
                                         value={formData.location}
@@ -142,7 +142,7 @@ export function ProfileEditModal({ isOpen, onClose, onSave, currentUser }: Profi
                                     Organization
                                 </label>
                                 <div className="relative">
-                                    <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9290C3]/60" />
+                                    <IoBusiness className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9290C3]/60 icon-glow" />
                                     <input
                                         type="text"
                                         value={formData.organization}
@@ -174,7 +174,7 @@ export function ProfileEditModal({ isOpen, onClose, onSave, currentUser }: Profi
                                     </>
                                 ) : (
                                     <>
-                                        <Save className="w-4 h-4" />
+                                        <IoSave className="w-4 h-4 icon-glow" />
                                         Save Changes
                                     </>
                                 )}
@@ -186,3 +186,4 @@ export function ProfileEditModal({ isOpen, onClose, onSave, currentUser }: Profi
         </AnimatePresence>
     )
 }
+

@@ -58,7 +58,7 @@ export default function ResetPasswordPage() {
                         <h1 className="text-3xl font-bold text-gradient mb-2 font-[family-name:var(--font-space-grotesk)]">
                             {step === 'request' ? 'Forgot Password' : step === 'reset' ? 'Reset Password' : 'Success'}
                         </h1>
-                        <p className="text-cosmic-lavender/70">
+                        <p className="text-white/70">
                             {step === 'request'
                                 ? 'Enter your email to receive a reset OTP'
                                 : step === 'reset'
@@ -77,7 +77,7 @@ export default function ResetPasswordPage() {
                     {step === 'request' && (
                         <form onSubmit={handleRequestOTP} className="space-y-4">
                             <div>
-                                <label className="block text-cosmic-lavender/70 text-sm mb-2 text-left">Email</label>
+                                <label className="block text-white/70 text-sm mb-2 text-left">Email</label>
                                 <input
                                     type="email"
                                     value={email}
@@ -104,7 +104,7 @@ export default function ResetPasswordPage() {
                             <button
                                 type="button"
                                 onClick={() => router.push('/login')}
-                                className="flex items-center gap-2 text-cosmic-lavender/60 hover:text-white transition-colors text-sm mx-auto mt-4"
+                                className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm mx-auto mt-4"
                             >
                                 <ArrowLeft className="w-4 h-4" />
                                 Back to Login
@@ -115,7 +115,7 @@ export default function ResetPasswordPage() {
                     {step === 'reset' && (
                         <form onSubmit={handleResetPassword} className="space-y-4">
                             <div>
-                                <label className="block text-cosmic-lavender/70 text-sm mb-2 text-left">OTP (6 Digits)</label>
+                                <label className="block text-white/70 text-sm mb-2 text-left">OTP (6 Digits)</label>
                                 <input
                                     type="text"
                                     maxLength={6}
@@ -127,7 +127,7 @@ export default function ResetPasswordPage() {
                                 />
                             </div>
                             <div className="relative">
-                                <label className="block text-cosmic-lavender/70 text-sm mb-2 text-left">New Password</label>
+                                <label className="block text-white/70 text-sm mb-2 text-left">New Password</label>
                                 <div className="relative">
                                     <input
                                         type={showPassword ? "text" : "password"}
@@ -180,3 +180,5 @@ export default function ResetPasswordPage() {
         </div>
     )
 }
+
+

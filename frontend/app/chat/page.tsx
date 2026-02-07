@@ -16,7 +16,7 @@ export default function ChatPage() {
                         <h1 className="text-4xl font-bold text-gradient font-[family-name:var(--font-space-grotesk)]">
                             Research Community
                         </h1>
-                        <p className="text-cosmic-lavender/70">Real-time collaboration for NEO researchers</p>
+                        <p className="text-white/70">Real-time collaboration for NEO researchers</p>
                     </div>
                 </div>
             </header>
@@ -31,10 +31,10 @@ export default function ChatPage() {
                 <div className="hidden lg:flex w-80 flex-col gap-6">
                     <div className="glass-card p-6">
                         <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                            <Info className="w-5 h-5 text-cosmic-lavender" />
+                            <Info className="w-5 h-5 text-white" />
                             Channel Info
                         </h2>
-                        <div className="space-y-4 text-sm text-cosmic-lavender/70">
+                        <div className="space-y-4 text-sm text-white/70">
                             <p>
                                 Welcome to the general research channel. Use this space to discuss current asteroid trajectories and potential impact scenarios.
                             </p>
@@ -51,10 +51,10 @@ export default function ChatPage() {
 
                     <div className="glass-card p-6 flex-1">
                         <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                            <Users className="w-5 h-5 text-cosmic-lavender" />
+                            <Users className="w-5 h-5 text-white" />
                             Online Researchers
                         </h2>
-                        <div className="text-center py-8 text-cosmic-lavender/50 text-sm">
+                        <div className="text-center py-8 text-white/50 text-sm">
                             Real-time presence list coming soon...
                         </div>
                     </div>
@@ -63,3 +63,5 @@ export default function ChatPage() {
         </div>
     )
 }
+
+

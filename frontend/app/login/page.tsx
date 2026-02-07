@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { LogIn, UserPlus } from 'lucide-react'
+import { IoLogIn, IoPersonAdd } from 'react-icons/io5'
 import { authAPI } from '@/lib/api'
 import { ViewPasswordToggle } from '@/components/auth/ViewPasswordToggle'
 
@@ -44,7 +44,8 @@ export default function LoginPage() {
                 router.push('/')
             }
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Authentication failed')
+            console.error('Login error:', err)
+            setError(err.response?.data?.message || err.message || 'Authentication failed')
         } finally {
             setLoading(false)
         }
@@ -63,7 +64,7 @@ export default function LoginPage() {
                         <h1 className="text-3xl font-bold text-gradient mb-2 font-[family-name:var(--font-space-grotesk)]">
                             {isLogin ? 'Welcome Back' : 'Join Cosmic Watch'}
                         </h1>
-                        <p className="text-cosmic-lavender/70">
+                        <p className="text-white/70">
                             {isLogin ? 'Sign in to your account' : 'Create your account'}
                         </p>
                     </div>
@@ -79,7 +80,7 @@ export default function LoginPage() {
                     <form onSubmit={handleSubmit} className="space-y-4">
                         {!isLogin && (
                             <div>
-                                <label className="block text-cosmic-lavender/70 text-sm mb-2">Name</label>
+                                <label className="block text-white/70 text-sm mb-2">Name</label>
                                 <input
                                     type="text"
                                     value={formData.name}
@@ -92,7 +93,7 @@ export default function LoginPage() {
                         )}
 
                         <div>
-                            <label className="block text-cosmic-lavender/70 text-sm mb-2">Email</label>
+                            <label className="block text-white/70 text-sm mb-2">Email</label>
                             <input
                                 type="email"
                                 value={formData.email}
@@ -104,7 +105,7 @@ export default function LoginPage() {
                         </div>
 
                         <div className="relative">
-                            <label className="block text-cosmic-lavender/70 text-sm mb-2">Password</label>
+                            <label className="block text-white/70 text-sm mb-2">Password</label>
                             <div className="relative">
                                 <input
                                     type={showPassword ? "text" : "password"}
@@ -126,7 +127,7 @@ export default function LoginPage() {
                                 <button
                                     type="button"
                                     onClick={() => router.push('/reset-password')}
-                                    className="text-xs text-cosmic-lavender/60 hover:text-white transition-colors"
+                                    className="text-xs text-white/60 hover:text-white transition-colors"
                                 >
                                     Forgot Password?
                                 </button>
@@ -143,7 +144,7 @@ export default function LoginPage() {
                                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                             ) : (
                                 <>
-                                    {isLogin ? <LogIn className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />}
+                                    {isLogin ? <IoLogIn className="w-5 h-5 icon-glow" /> : <IoPersonAdd className="w-5 h-5 icon-glow" />}
                                     {isLogin ? 'Sign In' : 'Sign Up'}
                                 </>
                             )}
@@ -156,7 +157,7 @@ export default function LoginPage() {
                             <div className="w-full border-t border-cosmic-lavender/20"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-4 bg-cosmic-deep text-cosmic-lavender/50">Or continue with</span>
+                            <span className="px-4 bg-cosmic-deep text-white/50">Or continue with</span>
                         </div>
                     </div>
 
@@ -184,7 +185,7 @@ export default function LoginPage() {
                                 setIsLogin(!isLogin)
                                 setError('')
                             }}
-                            className="text-cosmic-lavender hover:text-white transition-colors text-sm"
+                            className="text-white hover:text-white transition-colors text-sm"
                         >
                             {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
                         </button>
@@ -194,3 +195,5 @@ export default function LoginPage() {
         </div>
     )
 }
+
+

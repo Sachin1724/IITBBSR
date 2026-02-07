@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { AlertTriangle, TrendingUp, Calendar, Search, Globe, List } from 'lucide-react'
+import { IoWarning, IoTrendingUp, IoCalendar, IoSearch, IoGlobe, IoList } from 'react-icons/io5'
 import { asteroidAPI, type Asteroid } from '@/lib/api'
 import { calculateRiskScore } from '@/lib/utils'
 import AsteroidCard from '@/components/AsteroidCard'
@@ -88,7 +88,7 @@ export default function DashboardPage() {
                     viewport={{ once: true }}
                     className="mb-8"
                 >
-                    <h1 className="text-4xl md:text-5xl font-bold text-gradient mb-4 font-doto">
+                    <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 font-doto">
                         Asteroid Tracker
                     </h1>
                     <p className="text-cosmic-lavender/70 text-lg">
@@ -101,28 +101,28 @@ export default function DashboardPage() {
                     <StatsCard
                         title="Total Tracked"
                         value={stats.total}
-                        icon={<TrendingUp className="w-6 h-6" />}
+                        icon={<IoTrendingUp className="w-6 h-6 icon-glow" />}
                         color="cosmic-lavender"
                         delay={0}
                     />
                     <StatsCard
                         title="Potentially Hazardous"
                         value={stats.hazardous}
-                        icon={<AlertTriangle className="w-6 h-6" />}
+                        icon={<IoWarning className="w-6 h-6 icon-glow" />}
                         color="red-400"
                         delay={0.1}
                     />
                     <StatsCard
                         title="High Risk"
                         value={stats.highRisk}
-                        icon={<AlertTriangle className="w-6 h-6" />}
+                        icon={<IoWarning className="w-6 h-6 icon-glow" />}
                         color="orange-400"
                         delay={0.2}
                     />
                     <StatsCard
                         title="Approaching (7 days)"
                         value={stats.approaching}
-                        icon={<Calendar className="w-6 h-6" />}
+                        icon={<IoCalendar className="w-6 h-6 icon-glow" />}
                         color="yellow-400"
                         delay={0.3}
                     />
@@ -144,7 +144,7 @@ export default function DashboardPage() {
                                 : 'text-[#9290C3] hover:text-white'
                                 }`}
                         >
-                            <List className="w-4 h-4" />
+                            <IoList className="w-4 h-4 icon-glow" />
                             <span>List View</span>
                         </button>
                         <button
@@ -154,14 +154,14 @@ export default function DashboardPage() {
                                 : 'text-[#9290C3] hover:text-white'
                                 }`}
                         >
-                            <Globe className="w-4 h-4" />
+                            <IoGlobe className="w-4 h-4 icon-glow" />
                             <span>Orbital View</span>
                         </button>
                     </div>
 
                     {viewMode === 'list' && (
                         <div className="flex-1 relative">
-                            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-cosmic-lavender/50 w-5 h-5" />
+                            <IoSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-cosmic-lavender/50 w-5 h-5 icon-glow" />
                             <input
                                 type="text"
                                 placeholder="Search asteroids by name..."

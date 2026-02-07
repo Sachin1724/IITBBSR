@@ -12,9 +12,10 @@ export function ViewPasswordToggle({ show, onToggle }: ViewPasswordToggleProps) 
         <button
             type="button"
             onClick={onToggle}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-cosmic-lavender/50 hover:text-white transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
         >
             {show ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
         </button>
     )
 }
+

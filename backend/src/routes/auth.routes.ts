@@ -90,17 +90,17 @@ export async function authRoutes(fastify: FastifyInstance) {
     // Get profile (protected)
     fastify.get('/profile', {
         preHandler: [fastify.authenticate],
-    }, userController.getProfile)
+    }, (req, reply) => userController.getProfile(req as any, reply))
 
     // Update profile (protected)
     fastify.put('/profile', {
         preHandler: [fastify.authenticate],
-    }, userController.updateProfile)
+    }, (req, reply) => userController.updateProfile(req as any, reply))
 
     // Change password (protected)
     fastify.post('/change-password', {
         preHandler: [fastify.authenticate],
-    }, userController.changePassword)
+    }, (req, reply) => userController.changePassword(req as any, reply))
 
     // Forgot Password
     fastify.post('/forgot-password', async (request, reply) => {

@@ -66,3 +66,4 @@ export function getRiskLevel(score: number): {
     }
     return { level: 'LOW', color: 'text-green-400', bgColor: 'bg-green-500/20' }
 }
+

@@ -101,3 +101,4 @@ export function EarthModel({ radius = 5, rotation = 0 }: EarthModelProps) {
 useTexture.preload('/textures/8k_earth_daymap.jpg')
 useTexture.preload('/textures/8k_earth_normal_map_1.jpg')
 useTexture.preload('/textures/8k_earth_specular_map.jpg')
+

@@ -1,7 +1,7 @@
 'use client'
 
 import { formatDistanceToNow } from 'date-fns'
-import { User as UserIcon, MessageSquarePlus, Bookmark } from 'lucide-react'
+import { IoPerson, IoChatbubbleEllipses, IoBookmark } from 'react-icons/io5'
 import { useChat } from '@/contexts/ChatContext'
 import { watchlistAPI } from '@/lib/api'
 import Link from 'next/link'
@@ -84,7 +84,7 @@ export function ChatMessage({
                                 className="hover:text-[#F9E400] transition-colors p-0.5"
                                 title="Add to Watchlist"
                             >
-                                <Bookmark className="w-3 h-3" />
+                                <IoBookmark className="w-3 h-3 icon-glow" />
                             </button>
                         </span>
                     )
@@ -102,7 +102,7 @@ export function ChatMessage({
                     {userAvatar ? (
                         <img src={userAvatar} alt={username} className="w-full h-full object-cover" />
                     ) : (
-                        <UserIcon className="w-4 h-4 text-[#9290C3]" />
+                        <IoPerson className="w-4 h-4 text-[#9290C3] icon-glow" />
                     )}
                 </div>
 
@@ -121,7 +121,7 @@ export function ChatMessage({
                             onClick={handleInvite}
                             className="w-full flex items-center justify-center gap-2 bg-[#535C91] hover:bg-[#9290C3] text-white py-1.5 rounded text-xs font-semibold transition-all transform active:scale-95"
                         >
-                            <MessageSquarePlus className="w-3 h-3" />
+                            <IoChatbubbleEllipses className="w-3 h-3 icon-glow" />
                             Send Invite
                         </button>
                     </div>
@@ -152,3 +152,4 @@ export function ChatMessage({
         </div>
     )
 }
+
