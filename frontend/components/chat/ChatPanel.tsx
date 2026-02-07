@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useChat } from '@/contexts/ChatContext'
 import { ChatMessage } from './ChatMessage'
-import { IoClose, IoChatbubbleEllipses, IoPeople, IoPerson, IoSend } from 'react-icons/io5'
+import { IoClose, IoChatbubbleEllipses, IoChatbubbles, IoPeople, IoPerson, IoSend } from 'react-icons/io5'
 
 export function ChatPanel() {
     const pathname = usePathname()
@@ -107,7 +107,7 @@ export function ChatPanel() {
         setSearchResults([])
     }
 
-    const [hasUnread, setHasUnread] = useState(false)
+
 
     // Reset unread when entering personal tab
     useEffect(() => {
@@ -125,14 +125,12 @@ export function ChatPanel() {
         }
     }, [privateMessages, activeTab])
 
-    const panelClasses = isFullPage
-        ? "w-full h-full bg-[#070F2B] flex flex-col"
-        : "fixed bottom-6 right-6 w-96 h-[600px] bg-[#070F2B] border border-[#535C91]/30 rounded-xl shadow-2xl flex flex-col z-50 overflow-hidden"
+    const panelClasses = "fixed bottom-6 right-6 w-96 h-[600px] bg-[#070F2B] border border-[#535C91]/30 rounded-xl shadow-2xl flex flex-col z-50 overflow-hidden"
 
     return (
         <>
             {/* Chat Toggle Button */}
-            {!isOpen && !isFullPage && (
+            {!isOpen && (
                 <button
                     onClick={() => setIsOpen(true)}
                     className="fixed bottom-6 right-6 bg-gradient-to-r from-[#535C91] to-[#9290C3] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 flex items-center gap-2"
