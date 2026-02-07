@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
@@ -31,7 +31,7 @@ export function AsteroidTrajectory({
     earthRadius = 5,
 }: AsteroidTrajectoryProps) {
     const asteroidRef = useRef<THREE.Mesh>(null)
-    const trailRef = useRef<THREE.Line>(null)
+    const trailRef = useRef<any>(null)
 
     // Get composition color
     const getColor = () => {
@@ -101,9 +101,7 @@ export function AsteroidTrajectory({
             </mesh>
 
             {/* Trajectory trail */}
-            <line ref={trailRef} geometry={trailGeometry}>
-                <lineBasicMaterial color="#ff6600" opacity={0.5} transparent linewidth={2} />
-            </line>
+            <primitive ref={trailRef} object={new THREE.Line(trailGeometry, new THREE.LineBasicMaterial({ color: '#ff6600', opacity: 0.5, transparent: true }))} />
 
             {/* Plasma trail effect (during atmospheric entry) */}
             {isAnimating && currentTime > 0 && (

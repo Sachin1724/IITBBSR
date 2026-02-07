@@ -23,7 +23,7 @@
         "zod": "^3.22.0"
     },
     "devDependencies": {
-        "@fastify/helmet": "^13.0.2",
+        "@fastify/helmet": "11.1.1",
         "@types/bcrypt": "^5.0.0",
         "@types/node": "^20.19.32",
         "@types/node-cron": "^3.0.0",

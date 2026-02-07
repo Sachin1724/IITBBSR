@@ -1,8 +1,8 @@
 'use client'
 
-import { useRef, useMemo } from 'react'
+import { useRef, Suspense } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Sphere, useTexture } from '@react-three/drei'
+import { useGLTF, useTexture, Sphere } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface EarthModelProps {
@@ -10,19 +10,16 @@ interface EarthModelProps {
     rotation?: number
 }
 
-export function EarthModel({ radius = 5, rotation = 0 }: EarthModelProps) {
+function TexturedEarth({ radius }: { radius: number }) {
     const earthRef = useRef<THREE.Mesh>(null)
 
-    // Load Earth textures (we'll use procedural for now, can add real textures later)
-    const earthMaterial = useMemo(() => {
-        return new THREE.MeshStandardMaterial({
-            color: '#2233ff',
-            roughness: 0.7,
-            metalness: 0.1,
-        })
-    }, [])
+    // Load Earth textures
+    const [colorMap, normalMap, specularMap] = useTexture([
+        '/textures/earth_day.jpg',
+        '/textures/earth_normal.jpg',
+        '/textures/earth_specular.jpg',
+    ])
 
-    // Rotate Earth
     useFrame((state, delta) => {
         if (earthRef.current) {
             earthRef.current.rotation.y += delta * 0.05
@@ -30,17 +27,47 @@ export function EarthModel({ radius = 5, rotation = 0 }: EarthModelProps) {
     })
 
     return (
+        <Sphere ref={earthRef} args={[radius, 64, 64]}>
+            <meshStandardMaterial
+                map={colorMap}
+                normalMap={normalMap}
+                roughnessMap={specularMap}
+                roughness={0.7}
+                metalness={0.1}
+            />
+        </Sphere>
+    )
+}
+
+function FallbackEarth({ radius }: { radius: number }) {
+    const earthRef = useRef<THREE.Mesh>(null)
+
+    useFrame((state, delta) => {
+        if (earthRef.current) {
+            earthRef.current.rotation.y += delta * 0.05
+        }
+    })
+
+    return (
+        <Sphere ref={earthRef} args={[radius, 64, 64]}>
+            <meshStandardMaterial
+                color="#2244aa"
+                roughness={0.7}
+                metalness={0.1}
+                emissive="#001133"
+                emissiveIntensity={0.2}
+            />
+        </Sphere>
+    )
+}
+
+export function EarthModel({ radius = 5, rotation = 0 }: EarthModelProps) {
+    return (
         <group>
-            {/* Earth sphere */}
-            <Sphere ref={earthRef} args={[radius, 64, 64]} material={earthMaterial}>
-                {/* Add atmosphere glow */}
-                <meshBasicMaterial
-                    color="#4488ff"
-                    transparent
-                    opacity={0.1}
-                    side={THREE.BackSide}
-                />
-            </Sphere>
+            {/* Earth with Real Textures */}
+            <Suspense fallback={<FallbackEarth radius={radius} />}>
+                <TexturedEarth radius={radius} />
+            </Suspense>
 
             {/* Atmosphere layer */}
             <Sphere args={[radius * 1.02, 64, 64]}>
@@ -52,9 +79,20 @@ export function EarthModel({ radius = 5, rotation = 0 }: EarthModelProps) {
                 />
             </Sphere>
 
+            {/* Outer atmosphere glow */}
+            <Sphere args={[radius * 1.05, 64, 64]}>
+                <meshBasicMaterial
+                    color="#4488ff"
+                    transparent
+                    opacity={0.08}
+                    side={THREE.BackSide}
+                />
+            </Sphere>
+
             {/* Lights */}
-            <ambientLight intensity={0.3} />
-            <directionalLight position={[10, 10, 5]} intensity={1} />
+            <ambientLight intensity={0.4} />
+            <directionalLight position={[10, 10, 5]} intensity={1.2} castShadow />
+            <pointLight position={[-10, -10, -5]} intensity={0.3} color="#4488ff" />
         </group>
     )
 }

@@ -3,6 +3,8 @@ import { Inter, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import Navigation from '@/components/Navigation'
 import Starfield from '@/components/Starfield'
+import { ChatProvider } from '@/contexts/ChatContext'
+import { ChatPanel } from '@/components/chat/ChatPanel'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk' })
@@ -21,11 +23,14 @@ export default function RootLayout({
     return (
         <html lang="en" className="dark">
             <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans`}>
-                <Starfield />
-                <Navigation />
-                <main className="min-h-screen pt-20">
-                    {children}
-                </main>
+                <ChatProvider>
+                    <Starfield />
+                    <Navigation />
+                    <main className="min-h-screen pt-20">
+                        {children}
+                    </main>
+                    <ChatPanel />
+                </ChatProvider>
             </body>
         </html>
     )
