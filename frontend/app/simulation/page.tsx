@@ -85,7 +85,8 @@ export default function ImpactSimulationPage() {
 
     const fetchPresets = async () => {
         try {
-            const response = await fetch('http://localhost:4000/api/simulation/presets')
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+            const response = await fetch(`${apiUrl}/api/simulation/presets`)
             const data = await response.json()
             if (data.success) {
                 setPresets(data.data)
@@ -97,10 +98,11 @@ export default function ImpactSimulationPage() {
 
     const runSimulation = async (params: SimulationParams) => {
         setIsLoading(true)
-        setCurrentParams(params)
+        setSimulationResult(null) // Clear previous result
 
         try {
-            const response = await fetch('http://localhost:4000/api/simulation/impact', {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+            const response = await fetch(`${apiUrl}/api/simulation/impact`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(params),

@@ -8,6 +8,9 @@ export function setupChatSocket(io: SocketIOServer) {
     io.on('connection', (socket) => {
         console.log(`✅ Client connected: ${socket.id}`)
 
+        // Emit user count to all clients
+        io.emit('userCount', io.engine.clientsCount)
+
         // Join user's personal room (for notification/invites)
         socket.on('join-user-room', (userId: string) => {
             socket.join(`user:${userId}`)
@@ -143,6 +146,7 @@ export function setupChatSocket(io: SocketIOServer) {
 
         socket.on('disconnect', () => {
             console.log(`❌ Client disconnected: ${socket.id}`)
+            io.emit('userCount', io.engine.clientsCount)
         })
     })
 }

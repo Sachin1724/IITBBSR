@@ -31,7 +31,7 @@ export async function authRoutes(fastify: FastifyInstance) {
             await user.save()
 
             // Generate token
-            const token = fastify.jwt.sign({ userId: user._id }, { expiresIn: '7d' })
+            const token = fastify.jwt.sign({ userId: user._id, name: user.name, role: user.role }, { expiresIn: '7d' })
 
             return reply.code(201).send({
                 token,
@@ -68,7 +68,7 @@ export async function authRoutes(fastify: FastifyInstance) {
             }
 
             // Generate token
-            const token = fastify.jwt.sign({ userId: user._id }, { expiresIn: '7d' })
+            const token = fastify.jwt.sign({ userId: user._id, name: user.name, role: user.role }, { expiresIn: '7d' })
 
             return reply.send({
                 token,

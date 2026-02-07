@@ -92,6 +92,24 @@ export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
         setSearchResults([])
     }
 
+    const [hasUnread, setHasUnread] = useState(false)
+
+    // Reset unread when entering personal tab
+    useEffect(() => {
+        if (activeTab === 'personal') {
+            setHasUnread(false)
+        }
+    }, [activeTab])
+
+    // Set unread on new private messages if not in personal tab
+    useEffect(() => {
+        if (activeTab === 'community' && privateMessages.length > 0) {
+            // Check if the last message is recent or we just got one
+            // Simple approach: if we receive a message while in community tab
+            setHasUnread(true)
+        }
+    }, [privateMessages, activeTab])
+
     const panelClasses = isFullPage
         ? "w-full h-full bg-[#070F2B] flex flex-col"
         : "fixed bottom-6 right-6 w-96 h-[600px] bg-[#070F2B] border border-[#535C91]/30 rounded-xl shadow-2xl flex flex-col z-50 overflow-hidden"
@@ -105,6 +123,7 @@ export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
                     className="fixed bottom-6 right-6 bg-gradient-to-r from-[#535C91] to-[#9290C3] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 flex items-center gap-2"
                 >
                     <IoChatbubbles className="w-6 h-6 icon-glow" />
+                    {hasUnread && <div className="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full border-2 border-[#1B1A55]" />}
                 </button>
             )}
 
@@ -120,12 +139,10 @@ export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
                                 </h3>
                             </div>
                             <div className="flex items-center gap-3">
-                                {activeTab === 'community' && (
-                                    <div className="flex items-center gap-1 text-sm text-[#9290C3]">
-                                        <IoPeople className="w-4 h-4 icon-glow" />
-                                        <span>{onlineUsers}</span>
-                                    </div>
-                                )}
+                                <div className="flex items-center gap-1 text-sm text-[#9290C3]" title="Online Users">
+                                    <IoPeople className="w-4 h-4 icon-glow" />
+                                    <span>{onlineUsers}</span>
+                                </div>
                                 <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-400'}`} />
                                 {!isFullPage && (
                                     <button onClick={() => setIsOpen(false)} className="text-[#9290C3] hover:text-white transition-colors">
@@ -136,7 +153,7 @@ export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
                         </div>
 
                         {/* Tab Switcher */}
-                        <div className="flex bg-black/20 rounded-lg p-1">
+                        <div className="flex bg-black/20 rounded-lg p-1 relative">
                             <button
                                 onClick={() => { setActiveTab('community'); setActiveChat(null); }}
                                 className={`flex-1 py-1 text-xs rounded-md transition-all ${activeTab === 'community' ? 'bg-[#535C91] text-white' : 'text-[#9290C3] hover:text-white'}`}
@@ -145,9 +162,10 @@ export function ChatPanel({ isFullPage = false }: { isFullPage?: boolean }) {
                             </button>
                             <button
                                 onClick={() => setActiveTab('personal')}
-                                className={`flex-1 py-1 text-xs rounded-md transition-all ${activeTab === 'personal' ? 'bg-[#535C91] text-white' : 'text-[#9290C3] hover:text-white'}`}
+                                className={`flex-1 py-1 text-xs rounded-md transition-all relative ${activeTab === 'personal' ? 'bg-[#535C91] text-white' : 'text-[#9290C3] hover:text-white'}`}
                             >
                                 Personal
+                                {hasUnread && <div className="absolute top-1 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse" />}
                             </button>
                         </div>
                     </div>
