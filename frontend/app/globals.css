@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --cosmic-deep: #070F2B;
+    --cosmic-dark: #1B1A55;
+    --cosmic-nebula: #535C91;
+    --cosmic-lavender: #9290C3;
+  }
+
+  * {
+    @apply border-cosmic-nebula/20;
+  }
+
+  body {
+    @apply bg-cosmic-deep text-cosmic-lavender antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-cosmic-dark;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-cosmic-nebula rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-cosmic-lavender;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-cosmic-dark/40 backdrop-blur-md border border-cosmic-nebula/30 rounded-xl;
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300 hover:bg-cosmic-dark/60 hover:border-cosmic-lavender/50 hover:shadow-lg hover:shadow-cosmic-nebula/20;
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 bg-cosmic-nebula hover:bg-cosmic-lavender text-white rounded-lg transition-all duration-300 font-medium shadow-lg hover:shadow-cosmic-lavender/30 hover:scale-105;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 bg-cosmic-dark/60 hover:bg-cosmic-dark border border-cosmic-nebula/50 hover:border-cosmic-lavender text-cosmic-lavender rounded-lg transition-all duration-300 font-medium;
+  }
+
+  .input-cosmic {
+    @apply w-full px-4 py-3 bg-cosmic-dark/60 border border-cosmic-nebula/50 rounded-lg text-cosmic-lavender placeholder-cosmic-lavender/40 focus:outline-none focus:border-cosmic-lavender focus:ring-2 focus:ring-cosmic-lavender/20 transition-all duration-300;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-cosmic-lavender to-cosmic-nebula bg-clip-text text-transparent;
+  }
+
+  .cosmic-glow {
+    box-shadow: 0 0 20px rgba(146, 144, 195, 0.3);
+  }
+}
+
+@layer utilities {
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .animation-delay-600 {
+    animation-delay: 600ms;
+  }
+}
+
+/* Starfield background animation */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle 3s infinite;
+}
