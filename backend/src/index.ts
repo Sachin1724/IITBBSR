@@ -11,6 +11,7 @@ import { authRoutes } from './routes/auth.routes'
 import { asteroidRoutes } from './routes/asteroids.routes'
 import { watchlistRoutes } from './routes/watchlist.routes'
 import { alertRoutes } from './routes/alerts.routes'
+import { simulationRoutes } from './routes/simulation.routes'
 import { setupChatSocket } from './sockets/chat.socket'
 import { startDataRefreshScheduler } from './schedulers/dataRefresh'
 
@@ -67,6 +68,7 @@ async function start() {
         await fastify.register(asteroidRoutes, { prefix: '/api/asteroids' })
         await fastify.register(watchlistRoutes, { prefix: '/api/watchlist' })
         await fastify.register(alertRoutes, { prefix: '/api/alerts' })
+        await fastify.register(simulationRoutes, { prefix: '/api/simulation' })
 
         // Start schedulers
         startDataRefreshScheduler()
