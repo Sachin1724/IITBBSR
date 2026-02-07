@@ -208,13 +208,29 @@ export function ChatPanel() {
                                 {activeChat ? (
                                     /* 1-to-1 Chat View */
                                     <div className="flex-1 flex flex-col">
-                                        <div className="p-2 border-b border-white/5 bg-white/5 flex items-center gap-2">
-                                            <button onClick={() => setActiveChat(null)} className="p-1 hover:bg-white/10 rounded transition-colors text-white/50 hover:text-white">
-                                                <IoPeople className="w-4 h-4 rotate-180 icon-glow" />
+                                        <div className="p-2 border-b border-white/5 bg-white/5 flex items-center justify-between gap-2">
+                                            <div className="flex items-center gap-2">
+                                                <button onClick={() => setActiveChat(null)} className="p-1 hover:bg-white/10 rounded transition-colors text-white/50 hover:text-white">
+                                                    <IoPeople className="w-4 h-4 rotate-180 icon-glow" />
+                                                </button>
+                                                <span className="text-sm font-medium">
+                                                    {activeChat.participants.find(p => p._id !== currentUser.id)?.name || 'Research Partner'}
+                                                </span>
+                                            </div>
+                                            <button
+                                                onClick={() => {
+                                                    if (confirm('Delete this conversation? This will clear the chat history from your view.')) {
+                                                        // Clear messages for this conversation
+                                                        const conversationId = activeChat._id
+                                                        // Just close the chat - messages will persist in DB
+                                                        setActiveChat(null)
+                                                    }
+                                                }}
+                                                className="p-1.5 hover:bg-red-500/20 rounded transition-colors text-red-400 hover:text-red-300"
+                                                title="Close Conversation"
+                                            >
+                                                <IoClose className="w-4 h-4" />
                                             </button>
-                                            <span className="text-sm font-medium">
-                                                {activeChat.participants.find(p => p._id !== currentUser.id)?.name || 'Research Partner'}
-                                            </span>
                                         </div>
                                         <div className="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
                                             {privateMessages.filter(m => m.conversationId === activeChat._id).map((msg, index) => (
@@ -321,16 +337,20 @@ export function ChatPanel() {
                     {/* Input Area */}
                     {(activeTab === 'community' || activeChat) && (
                         <div className="p-4 border-t border-white/5 bg-[#070F2B]">
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 relative">
                                 <input
                                     type="text"
                                     value={inputMessage}
-                                    onChange={(e) => setInputMessage(e.target.value)}
+                                    onChange={(e) => setInputMessage(e.target.value.slice(0, 500))}
                                     onKeyPress={handleKeyPress}
                                     placeholder={activeTab === 'community' ? "Chat with community..." : "Message safely..."}
                                     disabled={!isConnected}
+                                    maxLength={500}
                                     className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#9290C3]"
                                 />
+                                <span className="absolute -top-5 right-0 text-[10px] text-white/30">
+                                    {inputMessage.length}/500
+                                </span>
                                 <button
                                     onClick={handleSend}
                                     disabled={!isConnected || !inputMessage.trim()}

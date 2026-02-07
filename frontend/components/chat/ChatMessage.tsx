@@ -107,7 +107,7 @@ export function ChatMessage({
                 </div>
 
                 {/* Profile Tooltip */}
-                {!isOwnMessage && (
+                {!isOwnMessage && onInvite && (
                     <div className="absolute bottom-full left-0 mb-2 w-48 bg-[#070F2B] border border-[#535C91]/50 rounded-lg p-3 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-50">
                         <div className="font-bold text-white text-sm mb-1">{username}</div>
                         {userBio && (
