@@ -2,12 +2,41 @@
 
 import { useRef, Suspense } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Sphere } from '@react-three/drei'
+import { useTexture, Sphere } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface EarthModelProps {
     radius?: number
     rotation?: number
+}
+
+function TexturedEarth({ radius }: { radius: number }) {
+    const earthRef = useRef<THREE.Mesh>(null)
+
+    // Load Earth textures (using JPG for better browser support)
+    const [dayMap, normalMap, specularMap] = useTexture([
+        '/textures/earth_day.jpg',
+        '/textures/earth_normal.jpg',
+        '/textures/earth_specular.jpg',
+    ])
+
+    useFrame((state, delta) => {
+        if (earthRef.current) {
+            earthRef.current.rotation.y += delta * 0.05
+        }
+    })
+
+    return (
+        <Sphere ref={earthRef} args={[radius, 128, 128]}>
+            <meshStandardMaterial
+                map={dayMap}
+                normalMap={normalMap}
+                roughnessMap={specularMap}
+                roughness={0.8}
+                metalness={0.1}
+            />
+        </Sphere>
+    )
 }
 
 function FallbackEarth({ radius }: { radius: number }) {
@@ -35,9 +64,9 @@ function FallbackEarth({ radius }: { radius: number }) {
 export function EarthModel({ radius = 5, rotation = 0 }: EarthModelProps) {
     return (
         <group>
-            {/* Earth with Fallback (textures optional) */}
+            {/* Earth with Real Textures (fallback to blue sphere if textures fail) */}
             <Suspense fallback={<FallbackEarth radius={radius} />}>
-                <FallbackEarth radius={radius} />
+                <TexturedEarth radius={radius} />
             </Suspense>
 
             {/* Atmosphere layer */}
@@ -67,3 +96,8 @@ export function EarthModel({ radius = 5, rotation = 0 }: EarthModelProps) {
         </group>
     )
 }
+
+// Preload textures for better performance
+useTexture.preload('/textures/earth_day.jpg')
+useTexture.preload('/textures/earth_normal.jpg')
+useTexture.preload('/textures/earth_specular.jpg')
