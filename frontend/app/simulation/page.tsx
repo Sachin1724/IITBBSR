@@ -33,6 +33,7 @@ export default function ImpactSimulationPage() {
     const [isAnimating, setIsAnimating] = useState(false)
     const [currentTime, setCurrentTime] = useState(0)
     const [timeScale, setTimeScale] = useState(1)
+    const [asteroidName, setAsteroidName] = useState<string>('')
     const [currentParams, setCurrentParams] = useState<SimulationParams>({
         diameter: 20,
         composition: 'rocky',
@@ -47,6 +48,26 @@ export default function ImpactSimulationPage() {
     // Load presets on mount
     useEffect(() => {
         fetchPresets()
+
+        // Check for URL parameters
+        const params = new URLSearchParams(window.location.search)
+        const diameter = params.get('diameter')
+        const velocity = params.get('velocity')
+        const composition = params.get('composition')
+        const angle = params.get('angle')
+        const name = params.get('name')
+
+        if (diameter || velocity || composition) {
+            const newParams: SimulationParams = {
+                diameter: diameter ? parseFloat(diameter) * 1000 : 20, // Convert km to meters
+                composition: (composition as any) || 'rocky',
+                velocity: velocity ? parseFloat(velocity) : 19,
+                approachAngle: angle ? parseFloat(angle) : 45,
+                impactLocation: { lat: 40, lon: -74, isOcean: false },
+            }
+            setCurrentParams(newParams)
+            if (name) setAsteroidName(decodeURIComponent(name))
+        }
     }, [])
 
     // Animation loop

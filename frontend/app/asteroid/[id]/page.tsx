@@ -181,6 +181,22 @@ export default function AsteroidDetailPage() {
 
                     <div className="flex gap-3">
                         <button
+                            onClick={() => {
+                                const diameter = asteroid.estimated_diameter?.kilometers?.estimated_diameter_max || 0.1
+                                const velocity = parseInt(asteroid.close_approach_data?.[0]?.relative_velocity?.kilometers_per_hour || '72000') / 1000
+                                const composition = asteroid.is_potentially_hazardous_asteroid ? 'metallic' : 'rocky'
+                                const angle = 45
+
+                                window.location.href = `/simulation?diameter=${diameter}&velocity=${velocity}&composition=${composition}&angle=${angle}&name=${encodeURIComponent(asteroid.name)}`
+                            }}
+                            className="btn-cosmic flex items-center gap-2"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            <span className="hidden sm:inline">Simulate</span>
+                        </button>
+                        <button
                             onClick={handleToggleWatchlist}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${isWatched
                                 ? 'bg-cosmic-nebula text-white shadow-lg shadow-cosmic-nebula/20'

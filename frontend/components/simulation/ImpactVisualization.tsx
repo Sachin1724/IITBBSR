@@ -3,6 +3,7 @@
 import { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { FireParticles } from './FireParticles'
 
 interface ImpactEffects {
     craterDiameter?: number
@@ -33,6 +34,9 @@ export function ImpactVisualization({
 }: ImpactVisualizationProps) {
     const flashRef = useRef<THREE.PointLight>(null)
     const shockwaveRef = useRef<THREE.Mesh>(null)
+    const severeRingRef = useRef<THREE.Mesh>(null)
+    const moderateRingRef = useRef<THREE.Mesh>(null)
+    const lightRingRef = useRef<THREE.Mesh>(null)
     const timeRef = useRef(0)
 
     // Convert lat/lon to 3D position
@@ -51,13 +55,16 @@ export function ImpactVisualization({
 
     // Animate impact flash and shockwave
     useFrame((state, delta) => {
-        if (!isVisible) return
+        if (!isVisible) {
+            timeRef.current = 0
+            return
+        }
 
         timeRef.current += delta
 
         // Flash animation
         if (flashRef.current && timeRef.current < 1) {
-            const intensity = 10 * (1 - timeRef.current)
+            const intensity = 15 * (1 - timeRef.current)
             flashRef.current.intensity = Math.max(0, intensity)
         }
 
@@ -68,6 +75,18 @@ export function ImpactVisualization({
             const opacity = 1 - timeRef.current / 3
                 ; (shockwaveRef.current.material as THREE.MeshBasicMaterial).opacity = opacity
         }
+
+        // Pulsing damage zones
+        const pulse = Math.sin(timeRef.current * 3) * 0.2 + 0.8
+        if (severeRingRef.current) {
+            (severeRingRef.current.material as THREE.MeshBasicMaterial).opacity = 0.4 * pulse
+        }
+        if (moderateRingRef.current) {
+            (moderateRingRef.current.material as THREE.MeshBasicMaterial).opacity = 0.3 * pulse
+        }
+        if (lightRingRef.current) {
+            (lightRingRef.current.material as THREE.MeshBasicMaterial).opacity = 0.2 * pulse
+        }
     })
 
     // Convert meters to scene units
@@ -75,19 +94,47 @@ export function ImpactVisualization({
         return (meters / 6371000) * earthRadius
     }
 
+    const craterRadius = effects.craterDiameter ? metersToUnits(effects.craterDiameter / 2) : 0
+
     return (
         <group position={impactPos}>
+            {/* Fire particles */}
+            {isVisible && outcome !== 'burnup' && timeRef.current < 5 && (
+                <FireParticles
+                    position={new THREE.Vector3(0, 0, 0)}
+                    intensity={1.5}
+                    isActive={isVisible}
+                />
+            )}
+
             {/* Impact flash */}
             {isVisible && outcome !== 'burnup' && (
-                <pointLight ref={flashRef} color="#ffaa00" intensity={10} distance={5} />
+                <>
+                    <pointLight ref={flashRef} color="#ffdd00" intensity={15} distance={8} />
+                    <pointLight color="#ff6600" intensity={5} distance={4} />
+                </>
+            )}
+
+            {/* Crater depression (for land impacts) */}
+            {isVisible && outcome === 'land_impact' && craterRadius > 0 && (
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.03, 0]}>
+                    <circleGeometry args={[craterRadius, 64]} />
+                    <meshStandardMaterial
+                        color="#2a1810"
+                        roughness={0.95}
+                        metalness={0.05}
+                        emissive="#ff4400"
+                        emissiveIntensity={0.15}
+                    />
+                </mesh>
             )}
 
             {/* Shockwave ring */}
             {isVisible && outcome !== 'burnup' && (
                 <mesh ref={shockwaveRef} rotation={[-Math.PI / 2, 0, 0]}>
-                    <ringGeometry args={[0.1, 0.2, 32]} />
+                    <ringGeometry args={[0.1, 0.25, 32]} />
                     <meshBasicMaterial
-                        color="#ff6600"
+                        color="#ff8800"
                         transparent
                         opacity={1}
                         side={THREE.DoubleSide}
@@ -95,67 +142,67 @@ export function ImpactVisualization({
                 </mesh>
             )}
 
-            {/* Effect zones (concentric circles) */}
+            {/* Effect zones (concentric circles) with enhanced visibility */}
             {isVisible && outcome !== 'burnup' && (
                 <>
                     {/* Severe damage zone (red) */}
-                    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]}>
+                    <mesh ref={severeRingRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.015, 0]}>
                         <ringGeometry
                             args={[
-                                metersToUnits(effects.blastRadius.severe * 0.8),
+                                metersToUnits(effects.blastRadius.severe * 0.75),
                                 metersToUnits(effects.blastRadius.severe),
-                                32,
+                                64,
                             ]}
                         />
                         <meshBasicMaterial
                             color="#ff0000"
+                            transparent
+                            opacity={0.4}
+                            side={THREE.DoubleSide}
+                        />
+                    </mesh>
+
+                    {/* Moderate damage zone (orange) */}
+                    <mesh ref={moderateRingRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.012, 0]}>
+                        <ringGeometry
+                            args={[
+                                metersToUnits(effects.blastRadius.moderate * 0.75),
+                                metersToUnits(effects.blastRadius.moderate),
+                                64,
+                            ]}
+                        />
+                        <meshBasicMaterial
+                            color="#ff6600"
                             transparent
                             opacity={0.3}
                             side={THREE.DoubleSide}
                         />
                     </mesh>
 
-                    {/* Moderate damage zone (orange) */}
-                    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]}>
+                    {/* Light damage zone (yellow) */}
+                    <mesh ref={lightRingRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.009, 0]}>
                         <ringGeometry
                             args={[
-                                metersToUnits(effects.blastRadius.moderate * 0.8),
-                                metersToUnits(effects.blastRadius.moderate),
-                                32,
+                                metersToUnits(effects.blastRadius.light * 0.75),
+                                metersToUnits(effects.blastRadius.light),
+                                64,
                             ]}
                         />
                         <meshBasicMaterial
-                            color="#ff6600"
+                            color="#ffcc00"
                             transparent
                             opacity={0.2}
                             side={THREE.DoubleSide}
                         />
                     </mesh>
 
-                    {/* Light damage zone (yellow) */}
-                    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]}>
-                        <ringGeometry
-                            args={[
-                                metersToUnits(effects.blastRadius.light * 0.8),
-                                metersToUnits(effects.blastRadius.light),
-                                32,
-                            ]}
-                        />
+                    {/* Thermal radiation zone (white/orange glow) */}
+                    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.006, 0]}>
+                        <circleGeometry args={[metersToUnits(effects.thermalRadius), 64]} />
                         <meshBasicMaterial
-                            color="#ffcc00"
+                            color="#ffaa44"
                             transparent
                             opacity={0.15}
-                            side={THREE.DoubleSide}
-                        />
-                    </mesh>
-
-                    {/* Thermal radiation zone (white) */}
-                    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]}>
-                        <circleGeometry args={[metersToUnits(effects.thermalRadius), 32]} />
-                        <meshBasicMaterial
-                            color="#ffffff"
-                            transparent
-                            opacity={0.1}
                             side={THREE.DoubleSide}
                         />
                     </mesh>
@@ -167,7 +214,7 @@ export function ImpactVisualization({
                 <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
                     <ringGeometry
                         args={[
-                            metersToUnits(effects.tsunamiRadius * 0.9),
+                            metersToUnits(effects.tsunamiRadius * 0.85),
                             metersToUnits(effects.tsunamiRadius),
                             64,
                         ]}
@@ -175,7 +222,7 @@ export function ImpactVisualization({
                     <meshBasicMaterial
                         color="#0088ff"
                         transparent
-                        opacity={0.4}
+                        opacity={0.5}
                         side={THREE.DoubleSide}
                     />
                 </mesh>
